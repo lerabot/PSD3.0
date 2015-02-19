@@ -36,7 +36,7 @@ class Item {
     this.calculatedItemPosition = new PVector (0, 0, 0);
     this.moveItem = new PVector (0, 0, 0);
     //call each item init
-    if (itemName == "casque") initCasque();
+//    if (itemName == "casque") initCasque();
   }
 
 
@@ -52,15 +52,15 @@ class Item {
       }
       // if it's not in your inventory, is it on the current map?
     } else {
-      if (currentMap == inMap) {
-        //check if the item is near enough to get it
-        getItem();
-        //refresh the item every frame
-        pushMatrix();
-        translate(itemPosition.x, itemPosition.y, itemPosition.z);
-        shape(itemModel);
-        popMatrix();
-      }
+//      if (currentMap == inMap) {
+//        //check if the item is near enough to get it
+//        getItem();
+//        //refresh the item every frame
+//        pushMatrix();
+//        translate(itemPosition.x, itemPosition.y, itemPosition.z);
+//        shape(itemModel);
+//        popMatrix();
+//      }
     }
   }
 
@@ -94,13 +94,13 @@ class Item {
   }
 
   //initialize the helmet
-  void initCasque() {    
-    println(currentMap == inMap);   
-    inInventory = false;
-    itemPosition.set(-3498.6326, 1200, -1773.5488);
-    itemModel = loadShape ("data/masque2.obj");
-    itemModel.scale(0.6);
-    itemModel.rotateZ(radians(180));
-  }
+//  void initCasque() {    
+//    println(currentMap == inMap);   
+//    inInventory = false;
+//    itemPosition.set(-3498.6326, 1200, -1773.5488);
+//    itemModel = loadShape ("data/masque2.obj");
+//    itemModel.scale(0.6);
+//    itemModel.rotateZ(radians(180));
+//  }
 }
 

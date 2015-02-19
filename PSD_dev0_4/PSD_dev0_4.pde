@@ -6,7 +6,7 @@
 
 int time;
 int lastTime;
-boolean debug = true;
+boolean debug = false;
 
 
 
@@ -24,13 +24,13 @@ void setup() {
   //  serialPort.write("Game Loading$");
 
   //Camera///////////////////////////////////////////////////////////////
-  explorerCam = new Camera (this);
+  explorerCam = new Camera (this, 0, 0, 0, 0, 0, -2000);
   thePlayer = new Player(explorerCam);
 
 
   //Maps///////////////////////////////////////////////////////////////
-//  myPapiExt = new Map(5, "Ext"); 
-      myPapiGarage = new Map(30, "Garage"); 
+  myPapiExt = new Map(5, "Ext"); 
+  //      myPapiGarage = new Map(30, "Garage"); 
   //  serialPort.write("Complete!$");
 }
 
@@ -45,13 +45,14 @@ void draw() {
   if (debug) {
     debugMode();
   }
+
   thePlayer.render();
 }
 
 void progression() {
   //shows the map depending on the currentMap String
-  if ( currentMap == "Garage") myPapiGarage.show();
-  if ( currentMap == "Ext") myPapiExt.show();
+  if ( thePlayer.currentMap() == "Garage") myPapiGarage.show();
+  if ( thePlayer.currentMap() == "Ext") myPapiExt.show();
 
   captureFrame();
 }
@@ -85,8 +86,9 @@ void keyPressed() {
   if (key == 112) debug = !debug;
 }
 
-  void mouseClicked() {
-    println("Position "+thePlayer.getPosition());
-    println("Target "+thePlayer.getTarget());
-  } 
+void mouseClicked() {
+  println("Feet "+thePlayer.getFeet());
+  println("Position "+thePlayer.getPosition());
+  println("Target "+thePlayer.getTarget());
+} 
 

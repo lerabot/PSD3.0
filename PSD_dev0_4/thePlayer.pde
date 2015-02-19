@@ -18,7 +18,7 @@ class Player {
 
   //variable related to the walk action
   int walkDirection = 0; // 0=stop 1=forward -1=backward
-  final float walkDistance = 300; //
+  final float walkDistance = 600; //
   float walkStep = 25; //
   int walkDone = 0;
   float walkBumpAngle = TWO_PI/walkStep;
@@ -28,6 +28,8 @@ class Player {
   float rotationAngle = 0;
   int rotationTime = 10;
   int rotationDone = 0;
+  
+  String inMap;
 
 
   Player(Camera cam) {      
@@ -67,13 +69,12 @@ class Player {
     if (walkDirection != 0) {
       if (walkDone < 25) {
         playerCamera.dolly(walkDirection*(walkDistance/walkStep));
-//        playerCamera.track(0.0, 5*sin(-walkBumpAngle));
+        //        playerCamera.track(0.0, 5*sin(radians(180)/25));
         walkDone++;
-//        walkBumpAngle += walkBumpIncr;
+        //        walkBumpAngle += walkBumpIncr;
       } else {
         walkDone = 0;
         walkDirection = 0;
-        println("reset");
       }
     }
   }
@@ -94,17 +95,20 @@ class Player {
         //resets both the angle and the incrementation variable
         rotationDone = 0;
         rotationAngle = 0;
-        println("reset A");
       }
     }
   }
+
+
+
 
   //using the W A S D pattern to move the camera around
   void cameraWASD() {
     if (key == 97) rotationAngle = - 0.35;     //A
     if (key == 100) rotationAngle = + 0.35;    //D
-    if (key == 119) walkDirection = 1;           //W
-    if (key == 115) walkDirection = -1;           //S
+    if (key == 119) walkDirection = -1;           //W
+    if (key == 115) walkDirection = +1;        //S
+    if (key == 114) println(myPapiExt.checkFloor());
   }
 
   //teleports the player to said location
@@ -128,6 +132,18 @@ class Player {
 
   float getHeight() {
     return playerHeight;
+  }
+  
+  PVector getFeet() {
+   return new PVector (playerPosition.x, playerPosition.y+playerHeight, playerPosition.z);
+  }
+  
+  void isIn(String mapName) {
+   inMap = mapName; 
+  }
+  
+  String currentMap() {
+   return inMap; 
   }
 }
 

@@ -100,7 +100,7 @@ class lcdText {
   }
 
   PVector textReach() {
-    return PVector.lerp(thePlayer.getPosition(), thePlayer.getTarget(), 400);
+    return PVector.lerp(thePlayer.getPosition(), thePlayer.getTarget(), reachDist);
   }
 }
 

@@ -10,13 +10,13 @@ void storm() {
 
 void debugMode() {
   itemStick();
-  showTarget();
+//  showTarget();
 }
 
-void showTarget() {
+void showTarget(float x, float y, float z) {
   pushMatrix();
   noStroke();
-//  translate(camTarget[0], camTarget[1], camTarget[2]);
+  translate(x, y, z);
   fill(0, 255, 0);
   sphere(25);
   popMatrix();
@@ -26,8 +26,8 @@ void itemStick() {
   PVector itemStick;
   itemStick = PVector.lerp(thePlayer.getPosition(), thePlayer.getTarget(), 0.9);
 
-//  println(itemStick+" stick");
-//  println(PVcamTarget+" target");   
+  //  println(itemStick+" stick");
+  //  println(PVcamTarget+" target");   
   strokeWeight(30);
   stroke(255);
   line(thePlayer.playerPosition.x, thePlayer.playerPosition.y, thePlayer.playerPosition.z, itemStick.x, itemStick.y, itemStick.z);

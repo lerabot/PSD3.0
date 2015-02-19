@@ -10,19 +10,12 @@ String serialData;
 //CAMERA///////////////////
 import damkjer.ocd.*;
 Camera explorerCam;
-boolean collisionAlert = false;
+
 //is the game saving frames atm
 boolean captureOn = false;
 
-
-
 Player thePlayer;
 
-
-
-
-
-String currentMap;
 //ITEM/////////////////////
 int itemIndex = 0;
 Item myItems[] = new Item [10];
