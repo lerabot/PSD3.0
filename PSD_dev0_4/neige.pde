@@ -1,7 +1,7 @@
 ////////////////////////////////////
 
-PVector gravity = new PVector(0, 0.05, 0);
-PVector vent = new PVector(0, 0, 0);
+PVector gravity = new PVector(0, 0.1, 0);
+PVector vent = new PVector(0, 0, 0.6);
 
 class TempeteNeige {
   //nombre de flocons
@@ -28,7 +28,7 @@ class TempeteNeige {
   void showTempete() {
     if (totalNeige != 0) {
       for (int i = laNeige.size ()-1; i >= 0; i--) {
-        vent.set(random(-0.3, 0.3), random(0.2), 0);
+        vent.set(random(-0.1,0.3), random(0.2), 0);
         Neige n = laNeige.get(i);
         n.applyForce(vent);
         n.applyForce(gravity);

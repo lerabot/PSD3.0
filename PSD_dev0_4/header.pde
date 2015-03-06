@@ -2,6 +2,10 @@
 //ALL GLOBAL VARIABLE // IMPORTS ARE HERE
 //////////////////////////////////////////////////
 
+//TIME BASED STUFF///////////////////
+int time;
+int lastTime;
+
 //SERIAL///////////////////
 import processing.serial.*;
 Serial serialPort;
@@ -14,12 +18,6 @@ Camera explorerCam;
 //is the game saving frames atm
 boolean captureOn = false;
 
-Player thePlayer;
-
-//ITEM/////////////////////
-int itemIndex = 0;
-Item myItems[] = new Item [10];
-
 //PROGRESSION FLAG////////
 boolean introDone = false;
 
@@ -28,7 +26,13 @@ PFont myFont;
 String lines[];
 int currentText = 0;
 
-
-
-////////////////////////////////////////
+//VISUAL STUFF///////////////////////////
+PFont theFont;
 PImage neigeImg;
+PGraphics onScreenText;
+PGraphics gameVisual;
+
+String currentMap;
+
+
+

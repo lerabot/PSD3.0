@@ -1,3 +1,7 @@
+///////////////////////////////////////
+//Random little hack or thing I use from time ot time. 
+///////////////////////////////////////
+
 void storm() {
   if (random(1.000) > 0.98) {
     ambientLight(250, 250, 255);
@@ -10,7 +14,7 @@ void storm() {
 
 void debugMode() {
   itemStick();
-//  showTarget();
+  //  showTarget();
 }
 
 void showTarget(float x, float y, float z) {
@@ -32,4 +36,33 @@ void itemStick() {
   stroke(255);
   line(thePlayer.playerPosition.x, thePlayer.playerPosition.y, thePlayer.playerPosition.z, itemStick.x, itemStick.y, itemStick.z);
 }
+
+void captureFrame() {
+  if (captureOn && frameCount % 4 == 0) {
+    saveFrame("M:/sega dreamcast/capturedFrame/frame######.tif");
+  }
+}
+
+
+/////KEYPRESSES//////
+void keyPressed() {  
+  //for camera movement using ASWD
+  thePlayer.cameraWASD();
+  //start a capture of frames
+  if (key == 'c') {
+    captureOn =! captureOn;
+    println("Capture "+captureOn);
+  }
+  //exit the software
+  if (key == 27) exit();
+  //switched the debug mode
+  if (key == 112) debug = !debug;
+}
+
+void mouseClicked() {
+  //  println("Feet "+thePlayer.getFeet());
+  println("Position "+thePlayer.getPosition());
+  //  println("Target "+thePlayer.getTarget());
+  //  println("Distance "+PVector.dist(thePlayer.getPosition(), thePlayer.getTarget()));
+} 
 

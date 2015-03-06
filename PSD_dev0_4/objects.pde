@@ -1,5 +1,6 @@
 ///////////////////////////////////////
 //Items
+//THIS GETS NO USE AT ALL, THERE'S NO POINT CHECKING THIS OUT. I'M KEEPING IT IF I EVER IMPLEMENT ITEM AGAIN
 /////////////////////////////////
 
 class Item {
@@ -42,16 +43,16 @@ class Item {
 
 
   //shows the model
-  void show() {
-    //check if the model is in inventory
-    if (inInventory) {
-      //check what item you,re currently viewing
-      if (itemIndexNum == itemIndex) {
-        //displays the model in fron of you and spins it
-        updatePosition();
-      }
-      // if it's not in your inventory, is it on the current map?
-    } else {
+//  void show() {
+//    //check if the model is in inventory
+//    if (inInventory) {
+//      //check what item you,re currently viewing
+//      if (itemIndexNum == itemIndex) {
+//        //displays the model in fron of you and spins it
+//        updatePosition();
+//      }
+//      // if it's not in your inventory, is it on the current map?
+//    } else {
 //      if (currentMap == inMap) {
 //        //check if the item is near enough to get it
 //        getItem();
@@ -61,8 +62,8 @@ class Item {
 //        shape(itemModel);
 //        popMatrix();
 //      }
-    }
-  }
+//    }
+//  }
 
   //quick class to check if the player is close enough to grab the item
   void getItem() {

@@ -3,44 +3,43 @@
 //This is where all the camera info should be.
 ////////////////////////////////
 
-class Player {
-  Camera playerCamera;
+Player thePlayer;
 
+class Player {
+  //hold the camera position and target
+  Camera playerCamera;
   PVector playerPosition;
   PVector playerTarget;
-  //this is important has it set the camera elevatio from the floor
-  float playerHeight = 850;
+  //this is important has it set the camera elevation from the floor
+  float playerHeight = 100;
+  //flag to allow or not movement
   boolean canMove = true;
   boolean canRotate = true;
 
-  //offset from the camera, to measure the player's height
-  int explorerHeight = 850;
 
   //variable related to the walk action
   int walkDirection = 0; // 0=stop 1=forward -1=backward
-  final float walkDistance = 600; //
+  final float walkDistance = 500; //
   float walkStep = 25; //
   int walkDone = 0;
-  float walkBumpAngle = TWO_PI/walkStep;
-  float walkBumpIncr = 0;
+  float walkBumpAngle;
 
   //same as up here but for rotation movement
   float rotationAngle = 0;
   int rotationTime = 10;
   int rotationDone = 0;
-  
-  String inMap;
 
+  String inMap;
 
   Player(Camera cam) {      
     this.playerCamera = cam;
-    //sets the pedrspective
+    //sets the perspective
     this.playerCamera.zoom(0.01);
     //feed the camPosition variable with the initial position
-    float[] camPosition = playerCamera.position();
-    float[] camTarget = playerCamera.target();
-    playerPosition = new PVector (camPosition[0], camPosition[1], camPosition[2]);
-    playerTarget = new PVector (camTarget[0], camTarget[1], camTarget[2]);
+    playerPosition = new PVector(0,0,0);
+    playerTarget = new PVector(0,0,0);
+    playerPosition.set(cam.position());
+    playerTarget.set(cam.target());
     canMove = true;
     canRotate = true;
   }
@@ -58,10 +57,8 @@ class Player {
   //makes sure all the camera info is up to date
   void updateCameraData() {  
     //gets the info from the explorerCam function and sets it to a float array
-    float[] camPosition = playerCamera.position();
-    float[] camTarget = playerCamera.target();
-    playerPosition = new PVector (camPosition[0], camPosition[1], camPosition[2]);
-    playerTarget = new PVector (camTarget[0], camTarget[1], camTarget[2]);
+    playerPosition.set(playerCamera.position());
+    playerTarget.set(playerCamera.target());
   }
 
   //linear movement forward or backward
@@ -69,9 +66,9 @@ class Player {
     if (walkDirection != 0) {
       if (walkDone < 25) {
         playerCamera.dolly(walkDirection*(walkDistance/walkStep));
-        //        playerCamera.track(0.0, 5*sin(radians(180)/25));
+        playerCamera.track(0.0, sin(-walkBumpAngle)*5);
         walkDone++;
-        //        walkBumpAngle += walkBumpIncr;
+        walkBumpAngle+= TWO_PI/walkStep;
       } else {
         walkDone = 0;
         walkDirection = 0;
@@ -130,20 +127,33 @@ class Player {
     return playerTarget;
   }
 
+  PVector getDirection() {
+    return PVector.sub(playerPosition, playerTarget);
+  }
+
   float getHeight() {
     return playerHeight;
   }
-  
+
   PVector getFeet() {
-   return new PVector (playerPosition.x, playerPosition.y+playerHeight, playerPosition.z);
+    return new PVector (playerPosition.x, playerPosition.y+playerHeight, playerPosition.z);
   }
-  
+
   void isIn(String mapName) {
-   inMap = mapName; 
+    inMap = mapName;
   }
-  
+
+  float getAngle() {
+    println(getDirection().heading());
+    return getDirection().heading();
+  }
+
   String currentMap() {
-   return inMap; 
+    return inMap;
+  }
+
+  PVector itemStick() {
+    return PVector.lerp(thePlayer.getPosition(), thePlayer.getTarget(), 0.5);
   }
 }
 

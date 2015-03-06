@@ -6,6 +6,7 @@
 Map myPapi;
 Map myPapiGarage;
 Map myPapiExt;
+Map myGourdi;
 
 class Map {
   //ATTRIBUTES
@@ -15,10 +16,9 @@ class Map {
   //setting the model name
   PShape mapModel;
   PShape mapFloorModel;
-  boolean hasFloorModel = false;
-  boolean hasFloor = false;
+  PShape mapSkyModel;
   boolean floorDrawn = true;
-
+  boolean hasFloor;
   PShape lastCheckedFace;
 
   //all the stuff related to the floor and collison detection
@@ -41,30 +41,40 @@ class Map {
 
     if (this.mapName == "Garage") initPapiGarage();
     if (this.mapName == "Ext") initPapiExt();
+    if (this.mapName == "Gourdi") initGourdi();
+    currentMap = this.mapName;
   }
 
   /////////////////////////////////////////////////////
   //Check if the camera is on the floor
   /////////////////////////////////////////////////////
   boolean checkFloor() {
-    if (hasFloorModel) {
+    if (mapFloorModel != null) {
       for (int i = 0; i < mapFloorModel.getChildCount (); i++) {
-        PShape child = mapFloorModel.getChild(i);
-        for (int j = 0; j < child.getVertexCount (); j++) {
-          PVector currentVertex = child.getVertex(j);
-          if (currentVertex.dist(thePlayer.getFeet()) < 500) {         
-            println("FOUND IT!");
-            lastCheckedFace = child;
-            return true;
-          } else {
-          }
+        PShape child = mapFloorModel.getChild(i); 
+        //        if (child.getVertexX(0) < -10000 || child.getVertexX(0) < -10000);
+        //        println("facepos "+currentShapePosition(child));
+        if (thePlayer.getFeet().dist(currentShapePosition(child)) < 1000) println(currentShapePosition(child));
+        if (thePlayer.getFeet().dist(currentShapePosition(child)) < 300) {  
+          println("facepos "+currentShapePosition(child));
+          println("feet pos "+thePlayer.getFeet());
+          println("hauteur "+child.getHeight());      
+          println("FOUND IT!");
+          lastCheckedFace = child;
+          return true;
+        } else {
         }
       }
     }
     return false;
   }
 
-
+  PVector currentShapePosition(PShape p) {
+    float averageX = (p.getVertexX(0) + p.getVertexX(1) + p.getVertexX(2))/3;
+    float averageY =(p.getVertexY(0) + p.getVertexY(1) + p.getVertexY(2))/3;
+    float averageZ =(p.getVertexZ(0) + p.getVertexZ(1) + p.getVertexZ(2))/3;
+    return new PVector(averageX, averageY, averageZ);
+  }
 
 
 
@@ -72,17 +82,8 @@ class Map {
   ///////////////////////////Shows the current map ///////////////
   ////////////////////////////////////////////////////////////////////
   void show() {
-    //    mapLights();
-    //    if (checkCollision()) {
-    //      //instantly reverse the movement
-    //      thePlayer.walk(-footstep);
-    //      //sets the variables to 0 and update the camera data too.
-    //      footstep = 0;
-    //      stepDone= 0;
-    //    }
-
     //display the current model
-    if (mapModel != null) {
+    if (mapModel != null && !debug) {
       shape(mapModel);
     }
 
@@ -91,58 +92,88 @@ class Map {
       shape(mapFloorModel);
     }
 
+    if (mapSkyModel != null && !debug) {
+      shape(mapSkyModel);
+    }
 
-    for (int i = 0; i < mapLcdText.length; i++) {
-      mapLcdText[i].nearText();
+    if (mapLcdText != null) {
+      for (int i = 0; i < mapLcdText.length; i++) {
+        mapLcdText[i].nearTextNoScreen();
+      }
     }
 
     if (tempeteActive) {
       laTempete.showTempete();
     }
 
-    if (debug && hasFloor) {
-      drawFloor();
-    }
-
-    if (debug && lastCheckedFace != null) {
-
-      beginShape();
-      strokeWeight(30);
-      stroke(255);
+    if (lastCheckedFace != null && debug) {
+      pushMatrix();
+      lastCheckedFace.beginShape();
+      lastCheckedFace.fill(255, 0, 0);
       shape(lastCheckedFace);
-      endShape(CLOSE);
+      lastCheckedFace.endShape(CLOSE);
+      popMatrix();
     }
   }
+
+  void initGourdi() {
+    mapLcdText = new lcdText[0]; 
+
+    //initialize the shape and set it to the position and scale   
+    if (debug) {
+      //debug map
+      mapModel = loadShape("data/debug.obj"); 
+      mapModel.scale(mapScale); 
+      mapModel.rotateZ(radians(180)); 
+      mapModel.translate(0, 0, 0);
+    } else {
+      //map proprieties
+      //      mapModel = loadShape("data/map2_shop.obj"); 
+      //      mapModel.scale(mapScale); 
+      //      mapModel.rotateZ(radians(180)); 
+      //      mapModel.translate(0, 0, 0); 
+
+      mapFloorModel = loadShape("data/map3/map3.obj"); 
+      mapFloorModel.scale(mapScale); 
+      mapFloorModel.rotateZ(radians(180)); 
+      mapFloorModel.translate(0, -500, 0);
+
+
+      //      thePlayer.cameraJump(-2061.4045, -thePlayer.getHeight(), 1016.4433); 
+      //      thePlayer.cameraAim(-1149.944, -thePlayer.getHeight(), -763.61993);
+    }
+    //set the current map name
+    thePlayer.isIn(mapName);
+    println(this.mapName+" loaded");
+  }
+
+
+
 
   //////////////////////////PapiGARAGE/////////////////////////////
   void initPapiGarage() {
     floorCorners = new PVector [7]; 
     //set up the floor as a collision object    
-    floorCorners[0] = new PVector (-3084.667, -849.9998, -1021.6255); 
+    floorCorners[0] = new PVector (-3084.667, -thePlayer.getHeight(), -1021.6255); 
     floorCorners[1] = new PVector (1722.3079, -850.00256, -806.89954); 
     floorCorners[2] = new PVector (1684.7804, -850.00024, -2875.14); 
     floorCorners[3] = new PVector (790.49896, -850.0002, -3563.4263); 
     floorCorners[4] = new PVector (645.8008, -850.00037, -4738.9956); 
     floorCorners[5] = new PVector (-2605.3396, -850.00037, -4892.056); 
     floorCorners[6] = new PVector (-3084.667, -849.9998, -1021.6255); 
-    hasFloor = true; 
+
     //function that compute where the collision shoud occur and the accuracy
     computeCollisionVector(15); 
 
-    //    for (int i = 0; i < maNeige.length; i++) {
-    //      maNeige[i] = new Neige(random(-4000, 2000), random(-3000, 50), random(-5000, -1000));
-    //    }
-
-
     mapLcdText = new lcdText[8]; 
-    mapLcdText[0] = new lcdText (160.25441, -850.00543, -3055.5469, 7, "15ans"); 
-    mapLcdText[1] = new lcdText (-842.87427, -850.00055, -1533.1855, 12, "tracteur"); 
-    mapLcdText[2] = new lcdText (299.46692, -880.4774, -4062.8794, 23, "escalier"); 
-    mapLcdText[3] = new lcdText (856.384, -850.00006, -1066.9874, 39, 5000, 45, "moteur1"); 
-    mapLcdText[4] = new lcdText (1355.7191, -849.99994, -1801.152, 33, "tool"); 
-    mapLcdText[5] = new lcdText (-2277.8677, -850.00024, -1182.8413, 28, "sortie", 0.2); 
-    mapLcdText[6] = new lcdText (-613.12445, -853.6523, -4502.5015, 55, "photo", 0.1); 
-    mapLcdText[7] = new lcdText (-1776.3018, -850.0, -2908.1582, 1, "huilintro", true); 
+    mapLcdText[0] = new lcdText (160.25441, -thePlayer.getHeight(), -3055.5469, 7, "15ans"); 
+    mapLcdText[1] = new lcdText (-842.87427, -thePlayer.getHeight(), -1533.1855, 12, "tracteur"); 
+    mapLcdText[2] = new lcdText (299.46692, -thePlayer.getHeight(), -4062.8794, 23, "escalier"); 
+    mapLcdText[3] = new lcdText (856.384, -thePlayer.getHeight(), -1066.9874, 39, 5000, 45, "moteur1"); 
+    mapLcdText[4] = new lcdText (1355.7191, -thePlayer.getHeight(), -1801.152, 33, "tool"); 
+    mapLcdText[5] = new lcdText (-2277.8677, -thePlayer.getHeight(), -1182.8413, 28, "sortie", 0.2); 
+    mapLcdText[6] = new lcdText (-613.12445, -thePlayer.getHeight(), -4502.5015, 55, "photo", 0.1); 
+    mapLcdText[7] = new lcdText (-1776.3018, -thePlayer.getHeight(), -2908.1582, 1, "huilintro", true); 
 
     thePlayer.cameraJump(-2428.1057, -thePlayer.getHeight(), -1637.1895); 
     thePlayer.cameraAim(-1516.6155, -thePlayer.getHeight(), -3417.4102); 
@@ -150,10 +181,11 @@ class Map {
     if (debug) {
       mapModel = loadShape("data/debug.obj");
     } else {
-      mapModel = loadShape("data/papieGarage31Good.obj");
+      mapModel = loadShape("data/map1/papieGarage31Good.obj");
     }
-    mapModel.scale(mapScale); 
+    mapModel.scale(mapScale);    
     mapModel.rotateZ(radians(180)); 
+    mapModel.translate(0, -25, 0);
     //set the current map name
     thePlayer.isIn(mapName);
     println(this.mapName+" loaded");
@@ -169,52 +201,42 @@ class Map {
     //initialize the shape and set it to the position and scale   
     if (debug) {
       //debug map
-      mapModel = loadShape("data/map2_shop_floor1.obj"); 
-      mapModel.scale(mapScale); 
-      mapModel.rotateZ(radians(180)); 
-      mapModel.translate(0, 0, 0);
-      hasFloorModel = true;
-    } else {
-      //map proprieties
-      //      mapModel = loadShape("data/map2_shop.obj"); 
-      //      mapModel.scale(mapScale); 
-      //      mapModel.rotateZ(radians(180)); 
-      //      mapModel.translate(0, 0, 0); 
-
-      mapFloorModel = loadShape("data/map2_shop_floor1.obj"); 
+      mapFloorModel = loadShape("data/map2/map2_shop_floor1.obj"); 
       mapFloorModel.scale(mapScale); 
       mapFloorModel.rotateZ(radians(180)); 
       mapFloorModel.translate(0, 0, 0);
-      hasFloorModel = true;
+    } else {
+      //map proprieties
+      mapModel = loadShape("data/map2/map2_shop.obj"); 
+      mapModel.scale(mapScale); 
+      mapModel.rotateZ(radians(180)); 
+      mapModel.translate(0, 0, 0); 
+      println("map2 main loaded");
 
-      thePlayer.cameraJump(-2061.4045, -thePlayer.getHeight(), 1016.4433); 
-      thePlayer.cameraAim(-1149.944, -thePlayer.getHeight(), -763.61993);
+      mapFloorModel = loadShape("data/map2/map2_shop_floor1.obj"); 
+      mapFloorModel.scale(mapScale); 
+      mapFloorModel.rotateZ(radians(180)); 
+      mapFloorModel.translate(0, 0, 0);
+      println("map2 floor loaded");
+
+      mapSkyModel = loadShape("data/map2/map2_shop_ciel.obj"); 
+      mapSkyModel.scale(mapScale); 
+      mapSkyModel.rotateZ(radians(180)); 
+      mapSkyModel.translate(0, 0, 0);
+      println("map2 sky loaded");
     }
+    thePlayer.cameraJump(-2061.4045, -thePlayer.getHeight(), 1016.4433); 
+    thePlayer.cameraAim(-1149.944, -thePlayer.getHeight(), -763.61993);
     //set the current map name
     thePlayer.isIn(mapName);
     println(this.mapName+" loaded");
-  }
-
-  //////////////////////////LIGHTS////////////////////////////////////////
-  //handle the light for different maps
-  void mapLights() {
-    if (this.mapName == "Papi") {
-      lights(); 
-      ambientLight(175, 175, 175, -893.9389, 200.0, 2306.427); 
-      //      pointLight(100, 0, 110, 265, -1200, -1842);
-      //      directionalLight(100, 100, 110, 0, -0.8, -2000);
-    }
-
-    if (this.mapName == "Ext") {
-      lights();
-    }
   }
 
   //////////////////////////////UTILITY////////////////////////////////////
   //create collision vectors if it has a floor
   void computeCollisionVector(int precision) {
     //checks if said map has a floor
-    if (hasFloor) {
+    if (mapFloorModel != null) {
       //calculate the number of collision vertex to be created in relation ship to the number of borders and precision
       collisionVectorIndex = precision * (floorCorners.length-1); 
       floorCollision = new PVector [collisionVectorIndex]; 
@@ -240,18 +262,6 @@ class Map {
     println(mapName + collisionVectorIndex);
   }
 
-  void drawFloor() {
-    if (debug && hasFloor) {
-      fill(255, 0, 0); 
-      beginShape(); 
-      for (int i = 0; i < floorCorners.length; i++) {
-        vertex(floorCorners[i].x, -125, floorCorners[i].z);
-      } 
-      endShape(CLOSE); 
-      noFill();
-    }
-  }
-
   //a boolean funtion to check the collision
   boolean checkCollision () {
     //needs a floor to happen
@@ -268,17 +278,6 @@ class Map {
     }
     //if none, just return false
     return false;
-  }
-
-
-
-
-
-  /////////////////////////////DISPLAY ITEMS  
-  void items() {
-    for (int i = 0; i < 1; i++) {
-      myItems[i].show();
-    }
   }
 }
 
