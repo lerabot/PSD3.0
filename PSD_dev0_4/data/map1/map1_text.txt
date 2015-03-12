@@ -1,17 +1,21 @@
-﻿//jeannot-intro
+# intro
+-1776.3018, 0, -2908.1582
 Always a weird smell
 in this place
 like a mix of oil
 and old blankets
 
-//
+# 15ans
+160.25441, 0, -3055.5469
 I'm sure these
 things didn't move
 in 15 years
 
-//
+# tracteur
+-842.87427, 0, -1533.1855
 1000 dollar for this
 tractor my grampa
+
 said a 1000 times.
 
 //
@@ -20,23 +24,27 @@ to half cold here,
 it's better inside
 the house.
 
-//
+# staircase
+299.46692, 0, -4062.8794
 This staircase
 goes in the house.
 It's been a while.
 
-//
+# sortie
+-2277.8677, 0, -1182.8413
 It's cold outside
 let's not go
 there.
 
-//
+# tools
+1355.7191, 0, -1801.152
 A couple of old
 power tools.
 Never saw him
 work here tho.
 
-//
+# moteur
+856.384, 0, -1066.9874
 One of his many
 magnetic motor
 prototype.
@@ -52,7 +60,8 @@ Actually this
 one has my name
 on it.
 
-//
+# picture
+-613.12445, 0, -4502.5015
 An old picture
 of the family farm.
 My dad is probably

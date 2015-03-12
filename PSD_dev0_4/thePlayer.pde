@@ -10,6 +10,7 @@ class Player {
   Camera playerCamera;
   PVector playerPosition;
   PVector playerTarget;
+  PVector playerHeadMovement;
   //this is important has it set the camera elevation from the floor
   float playerHeight = 100;
   //flag to allow or not movement
@@ -19,7 +20,7 @@ class Player {
 
   //variable related to the walk action
   int walkDirection = 0; // 0=stop 1=forward -1=backward
-  final float walkDistance = 500; //
+  final float walkDistance = 400; //
   float walkStep = 25; //
   int walkDone = 0;
   float walkBumpAngle;
@@ -36,8 +37,9 @@ class Player {
     //sets the perspective
     this.playerCamera.zoom(0.01);
     //feed the camPosition variable with the initial position
-    playerPosition = new PVector(0,0,0);
-    playerTarget = new PVector(0,0,0);
+    playerPosition = new PVector(0, 0, 0);
+    playerTarget = new PVector(0, 0, 0);
+    playerHeadMovement = new PVector(0,0,0);
     playerPosition.set(cam.position());
     playerTarget.set(cam.target());
     canMove = true;
@@ -50,6 +52,7 @@ class Player {
       walk();
     if (canRotate) 
       turnAround();
+    headMotion();
     updateCameraData();
     playerCamera.feed();
   }
@@ -66,7 +69,7 @@ class Player {
     if (walkDirection != 0) {
       if (walkDone < 25) {
         playerCamera.dolly(walkDirection*(walkDistance/walkStep));
-        playerCamera.track(0.0, sin(-walkBumpAngle)*5);
+        playerCamera.track(0.0, sin(-walkBumpAngle)*3);
         walkDone++;
         walkBumpAngle+= TWO_PI/walkStep;
       } else {
@@ -94,6 +97,15 @@ class Player {
         rotationAngle = 0;
       }
     }
+  }
+
+  void headMotion() {
+    float tumbleValueX = random(-0.0002, 0.0002);
+    float tumbleValueY = random(-0.0001, 0.0001);
+    playerHeadMovement.add(tumbleValueX, tumbleValueY, 0);
+    playerHeadMovement.mult(0.76);
+    playerHeadMovement.limit(0.005);
+    playerCamera.tumble(playerHeadMovement.x, playerHeadMovement.y);
   }
 
 

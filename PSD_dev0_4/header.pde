@@ -23,13 +23,14 @@ boolean introDone = false;
 
 //TEXT INFO//////////////////////////
 PFont myFont;
-String lines[];
+//String mapText[];
+//String lines[];
 int currentText = 0;
 
 //VISUAL STUFF///////////////////////////
 PFont theFont;
 PImage neigeImg;
-PGraphics onScreenText;
+PGraphics GUIrender;
 PGraphics gameVisual;
 
 String currentMap;

@@ -12,17 +12,18 @@ void storm() {
 //  spotLight(255, 250, 250.0, PVcamPosition.x, PVcamPosition.y, PVcamPosition.z, PVcamTarget.x, PVcamTarget.y, PVcamTarget.z, 5, 5);
 //}
 
-void debugMode() {
-  itemStick();
-  //  showTarget();
+float frontPlane() {
+  float[] att = explorerCam.attitude();
+  return att[0];
 }
 
+//just shows a green dot a specified location
 void showTarget(float x, float y, float z) {
   pushMatrix();
   noStroke();
   translate(x, y, z);
   fill(0, 255, 0);
-  sphere(25);
+  box(12);
   popMatrix();
 }
 

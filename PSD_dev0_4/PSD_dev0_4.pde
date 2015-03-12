@@ -10,69 +10,44 @@ boolean debug = true;
 
 void setup() {
   size(1280, 720, P3D);
-  smooth();
-  noCursor();
   //the text stuff
   neigeImg = loadImage("neige.png");
-  lines = loadStrings("map1/map1_text.txt");
   theFont = loadFont("psdFont.vlw");
 
-
-  onScreenText = createGraphics(400, 80, P3D);
-  onScreenText.beginDraw();
-  //  onScreenText.textFont(theFont, 60);
-  onScreenText.textSize(20);
-  onScreenText.textAlign(LEFT, TOP);
-  onScreenText.endDraw();
+  //GUI///////////////////////////////////////////////////////////////
+  theGUI = new GUI();
+  //  thePlayer.render();
   //Camera///////////////////////////////////////////////////////////////
   explorerCam = new Camera (this, 0.85, 1.77, 100, 100000);
   thePlayer = new Player(explorerCam);
-
   //Maps///////////////////////////////////////////////////////////////
-  //initialize the first map to be showed
-//  myGourdi = new Map(1, "Gourdi"); 
-    myPapiExt = new Map(3, "Ext"); 
+  //initialize the first map to be showedr
+  //  myGourdi = new Map(1, "Gourdi"); 
+  // myPapiExt = new Map(3, "Ext"); 
 
-  //      myPapiGarage = new Map(30, "Garage"); 
+  myPapiGarage = new Map(30, "Garage"); 
   //  serialPort.write("Complete!$");
 }
 
 
 //DRAW////////////////////////////////////////
 void draw() {
+  //  lights();
   background(127);
   time = millis();
+  //  theGUI.clean();
   progression();      
-
+  //  theGUI.GUItext(thePlayer.playerPosition.array(), "Position", 5);
   if (debug) {
     showTarget(thePlayer.itemStick().x, thePlayer.itemStick().y, thePlayer.itemStick().z);
   }
 
   thePlayer.render();
-  GUI();
+  theGUI.display();
 }
 
 
-//graphical user interface (CURRENTLY IN TESTING)
-void GUI() {
-  pushMatrix();
-  translate(GUIpos().x, GUIpos().y, GUIpos().z);
-  rotateY(frontPlane());
-  scale(0.25);
-  imageMode(CENTER);
-  image(onScreenText, 0, 270);
-  popMatrix();
-}
 
-PVector GUIpos() {
-  return PVector.lerp(thePlayer.getPosition(), thePlayer.getTarget(), 0.1);
-}
-
-
-float frontPlane() {
-  float[] att = explorerCam.attitude();
-  return att[0];
-}
 ////////////////////////////////////////////////////
 
 
