@@ -15,7 +15,7 @@ V0.5 - Currently being worked on
 * Needs a loading screen
 
 
-V0.4 - Done
+V0.4 - Done - March 16 2015
 * Added 2 new maps
 * Added snow for map 2
 * Rewrited the LCDtext function to work with the all new GUI class
