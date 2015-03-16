@@ -13,6 +13,7 @@ class GUI {//graphical user interface (CURRENTLY IN TESTING)
     textBox = loadImage("textbox.png");
     GUIrender = createGraphics(GUIwidth, GUIheight, P3D);
     GUIrender.beginDraw();
+    GUIrender.background(255);
     clean();
     //GUIrender.textFont(theFont, 60);
     GUIrender.textAlign(LEFT, TOP);
@@ -20,7 +21,6 @@ class GUI {//graphical user interface (CURRENTLY IN TESTING)
   }
 
   void display() {
-    updateGUI();
     pushMatrix();
     translate(GUIpos().x, GUIpos().y, GUIpos().z);
     rotateY(frontPlane());
@@ -33,7 +33,7 @@ class GUI {//graphical user interface (CURRENTLY IN TESTING)
   void clean() {
     GUIrender.beginDraw();
     GUIrender.background(0, 0);
-    GUIrender.image(textBox,0,0);
+    GUIrender.image(textBox, 0, 0);
     GUIrender.endDraw();
   }
 
@@ -42,7 +42,7 @@ class GUI {//graphical user interface (CURRENTLY IN TESTING)
 
   void GUIloading() {
     GUIrender.beginDraw();
-//    GUIrender.background(bgColor);
+    //    GUIrender.background(bgColor);
     GUIrender.fill(0);
     GUIrender.textSize(textSize);
     GUIrender.text("Loading", 5, 5);

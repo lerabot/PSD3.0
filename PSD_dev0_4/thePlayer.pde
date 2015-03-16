@@ -9,6 +9,7 @@ class Player {
   //hold the camera position and target
   Camera playerCamera;
   Map activeMap;
+  boolean inMap;
   PVector playerPosition;
   PVector playerTarget;
   PVector playerHeadMovement;
@@ -53,8 +54,10 @@ class Player {
 
   //render the scene depending on camera location, this is the fonction to add in the main loop
   void render() {
-    headMotion();
-    updatePosition();
+    if (inMap) {
+      headMotion();
+      updatePosition();
+    }
     updateCameraData();
     playerCamera.feed();
   }

@@ -1,0 +1,23 @@
+class Weather {
+  
+  
+  
+  
+ Weather() {
+ } 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+}

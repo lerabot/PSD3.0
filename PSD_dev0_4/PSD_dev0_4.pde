@@ -15,29 +15,25 @@ void setup() {
   theFont = loadFont("psdFont.vlw");
 
   //GUI///////////////////////////////////////////////////////////////
-  theGUI = new GUI();
-  //  thePlayer.render();
+
   //Camera///////////////////////////////////////////////////////////////
   explorerCam = new Camera (this, 0.85, 1.77, 100, 100000);
   thePlayer = new Player(explorerCam);
+  theGUI = new GUI();
   //Maps///////////////////////////////////////////////////////////////
   //initialize the first map to be showed
 
   //myPapiGarage = new Map(-30, "Garage"); 
-  myPapiExt = new Map(-3, "Ext"); 
-  // myGourdi = new Map(-1, "Gourdi"); 
+  //myPapiExt = new Map(-3, "Ext"); 
+  // myGourdi = new Map(-1, "Gourdi");
 }
 
 
 //DRAW////////////////////////////////////////
 void draw() {
-  //  lights();
-  background(127);
+  background(0);
   time = millis();
-  //  theGUI.clean();
   progression();      
-  //  theGUI.GUItext(thePlayer.playerPosition.array(), "Position", 5);
-
   thePlayer.render();
   theGUI.display();
 }
@@ -50,7 +46,8 @@ void draw() {
 
 //The main display of the game happpens here
 void progression() {
-  thePlayer.getMap().show();
+  if (thePlayer.activeMap != null)
+    thePlayer.getMap().show();
   captureFrame();
 }
 
