@@ -5,11 +5,10 @@
 ///////////////////////////////////////
 
 class lcdText {
-
+  //actual text
   String[] theText;
+  //its position
   PVector textPosition;
-
-  int[] lineNum = new int [3];
   //has the text been displayed
   boolean textDisplayed;
   //the text "name"
@@ -19,12 +18,11 @@ class lcdText {
   //when has it been displayed
   int displayedAt = 0;
   int delaySecondText;
-  float reachDist = 0.35;
+  float reachDist = 0.20;
   boolean uniqueText = false;
 
   lcdText(PVector textPosition, int lineNum, String name, String[] theText) {
     this.textPosition = textPosition;
-    this.lineNum[0] = lineNum;
     textDisplayed = false;
     this.name = name;
     this.theText = theText;
@@ -33,24 +31,23 @@ class lcdText {
   /////////////////////////////////////////////////////
   //WORK ON THIS, THIS SORTA WORK NOW
   //////////////////////////////////////////////////////
-  void nearTextNoScreen () {
+  void writeText() {
     //adds a delay to prevent from redoing the action
-    if (displayedAt + 1500 < time ) { 
+    if (displayedAt + 3500 < time ) { 
       //si ton "reach" est dans un perimetre de 400 de l'object en question
       if (textPosition.dist(textReach()) < 400) {
         ballColor = color(0, 255, 0);
-        // check pour qu'il n'envois qu'une fois le text a l'écran
-        if (currentText != lineNum[0]) {
-          displayedAt = time;
-          textDisplayed = true;
-          int position = 0;
-          theGUI.clean();
-          for (int i = 0; i < theText.length; i++) {
-            if (theText[i] != null)
-              theGUI.GUItext(theText[i], 7+position*15);              
+        int position = 0;
+        theGUI.clean();
+        for (int i = 0; i < theText.length; i++) {            
+          if (theText[i] != null) {
+            theGUI.GUItext(theText[i], 7+position*15);              
             position++;
           }
         }
+        textDisplayed = true;
+        displayedAt = time;
+
         //        if (lineNum[1] != 0 && displayedAt+delaySecondText < time) {
         //          displayedAt = time;
         //          textDisplayed = true;

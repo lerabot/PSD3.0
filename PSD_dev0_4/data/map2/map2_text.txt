@@ -1,25 +1,23 @@
-#1 - intro
+#1 intro
 160, 0, 400
 Was it really 
 this far?
-r
-asd
 
-#2 - feu
+#2 feu
 1000, 0, -2000
 That's where
 the fire was a
 couple year ago.
 :
 
-#3 - tracteur
+#3 tracteur
 -1000,789,763
 Ah, good ol'
 tractor.
 
 
 l'extension pour le bois
-This was built5
+This was built
 recently. I don't 
 remember this.
 

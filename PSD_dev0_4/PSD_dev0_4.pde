@@ -21,12 +21,11 @@ void setup() {
   explorerCam = new Camera (this, 0.85, 1.77, 100, 100000);
   thePlayer = new Player(explorerCam);
   //Maps///////////////////////////////////////////////////////////////
-  //initialize the first map to be showedr
-  //  myGourdi = new Map(1, "Gourdi"); 
-  // myPapiExt = new Map(3, "Ext"); 
+  //initialize the first map to be showed
 
-  myPapiGarage = new Map(30, "Garage"); 
-  //  serialPort.write("Complete!$");
+  //myPapiGarage = new Map(-30, "Garage"); 
+  myPapiExt = new Map(-3, "Ext"); 
+  // myGourdi = new Map(-1, "Gourdi"); 
 }
 
 
@@ -38,9 +37,6 @@ void draw() {
   //  theGUI.clean();
   progression();      
   //  theGUI.GUItext(thePlayer.playerPosition.array(), "Position", 5);
-  if (debug) {
-    showTarget(thePlayer.itemStick().x, thePlayer.itemStick().y, thePlayer.itemStick().z);
-  }
 
   thePlayer.render();
   theGUI.display();
@@ -54,11 +50,7 @@ void draw() {
 
 //The main display of the game happpens here
 void progression() {
-
-  //shows the map depending on the currentMap String
-  if ( thePlayer.currentMap() == "Garage") myPapiGarage.show();
-  if ( thePlayer.currentMap() == "Ext") myPapiExt.show();
-  if ( thePlayer.currentMap() == "Gourdi") myGourdi.show();
+  thePlayer.getMap().show();
   captureFrame();
 }
 

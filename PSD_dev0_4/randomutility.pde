@@ -27,6 +27,16 @@ void showTarget(float x, float y, float z) {
   popMatrix();
 }
 
+//just shows a green dot a specified location
+void showTarget(PVector pos) {
+  pushMatrix();
+  noStroke();
+  translate(pos.x, pos.y, pos.z);
+  fill(0, 255, 0);
+  box(12);
+  popMatrix();
+}
+
 void itemStick() {
   PVector itemStick;
   itemStick = PVector.lerp(thePlayer.getPosition(), thePlayer.getTarget(), 0.9);
@@ -48,7 +58,7 @@ void captureFrame() {
 /////KEYPRESSES//////
 void keyPressed() {  
   //for camera movement using ASWD
-  thePlayer.cameraWASD();
+  thePlayer.checkKeypress();
   //start a capture of frames
   if (key == 'c') {
     captureOn =! captureOn;
@@ -63,7 +73,7 @@ void keyPressed() {
 void mouseClicked() {
   //  println("Feet "+thePlayer.getFeet());
   println("Position "+thePlayer.getPosition());
-  //  println("Target "+thePlayer.getTarget());
+  println("Target "+thePlayer.getTarget());
   //  println("Distance "+PVector.dist(thePlayer.getPosition(), thePlayer.getTarget()));
 } 
 
