@@ -17,10 +17,13 @@ V0.5 - Currently being worked on
 
 V0.4 - Done
 * Added 2 new maps
+* Added snow for map 2
 * Rewrited the LCDtext function to work with the all new GUI class
 * Added a simple GUI
 * Rewrited (partially) the walking
 * Putted together a much needed player class with all the camera and moving methods
+* Removed everything serial related for now
+* Object class is on hold
 
 V0.3 - Lightweight for Sophian
 * Cleaned some unsued OBJ file
