@@ -1,7 +1,8 @@
 ////////////////////////////////////
 
-PVector gravity = new PVector(0, 0.05, 0);
-PVector vent = new PVector(0, 0, 0);
+PVector gravity = new PVector(0, 0.1, 0);
+PVector vent = new PVector(0, 0, 0.6);
+PVector vent2 = new PVector(0, 0, 0);
 
 class TempeteNeige {
   //nombre de flocons
@@ -28,8 +29,12 @@ class TempeteNeige {
   void showTempete() {
     if (totalNeige != 0) {
       for (int i = laNeige.size ()-1; i >= 0; i--) {
-        vent.set(random(-0.3, 0.3), random(0.2), 0);
+        vent.set(random(-0.1, 0.3), random(0.2), 0);
+        vent2.set(vent);
+        vent2.mult(5);
         Neige n = laNeige.get(i);
+        if (i % 5 == 0) 
+          n. applyForce(vent2);
         n.applyForce(vent);
         n.applyForce(gravity);
         n.updateLocation();
@@ -63,7 +68,6 @@ class Neige {
     velocity.set(startingVelocity);
     velocity.setMag(random(0, 5));
     initialAngle = int(random(360));
-
   }
 
   Neige (float x, float y, float z) {
@@ -78,7 +82,7 @@ class Neige {
 
     pushMatrix();
     translate(location.x, location.y, location.z);
-    rotateY(radians(initialAngle*(noise(noiseTime,50))));
+    rotateY(radians(initialAngle*(noise(noiseTime, 50))));
     image(neigeImg, 0, 0, 10, 10);   
     popMatrix();
     noiseTime++;

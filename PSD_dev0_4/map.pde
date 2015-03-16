@@ -3,9 +3,9 @@
 ///////////////////////////////////////////
 
 //MAPS///////////////////
-Map myPapi;
 Map myPapiGarage;
 Map myPapiExt;
+Map myGourdi;
 
 class Map {
   //ATTRIBUTES
@@ -15,9 +15,10 @@ class Map {
   //setting the model name
   PShape mapModel;
   PShape mapFloorModel;
+  PShape mapSkyModel;
 
-  boolean hasFloor = false;
-  boolean floorDrawn = true;
+  PShape lastCheckedFace;
+  PShape nextCheckedFace;
 
   //all the stuff related to the floor and collison detection
   PVector[] floorCorners;
@@ -26,7 +27,8 @@ class Map {
   int collisionOffset = 0;
   int collisionVectorIndex = 0;
 
-  lcdText[] mapLcdText;
+  ArrayList<lcdText> texts;
+  String[] mapText;
 
   TempeteNeige laTempete;
   boolean tempeteActive = false;
@@ -36,157 +38,283 @@ class Map {
   public Map (int mapScale, String mapName) {
     this.mapName = mapName;
     this.mapScale = mapScale;
-
     if (this.mapName == "Garage") initPapiGarage();
     if (this.mapName == "Ext") initPapiExt();
+    if (this.mapName == "Gourdi") initGourdi();
+    createText(mapText);
+    thePlayer.setMap(this);
   }
+
+  /////////////////////////////////////////////////////
+  //Check if the camera is on the floor
+  /////////////////////////////////////////////////////
+
+  void drawFace(PShape child) {
+    lastCheckedFace.beginShape();
+    shape(lastCheckedFace);
+    lastCheckedFace.endShape(CLOSE);
+  }
+
+
+  boolean checkFloor() {
+    if (mapFloorModel != null) {
+      for (int i = 0; i < mapFloorModel.getChildCount (); i++) {
+        PShape child = mapFloorModel.getChild(i); 
+        //        for (int j = 0; j < 7; j++) {
+        if (thePlayer.getFeet().dist(currentShapePosition(child)) < 1500) {  
+          //          println("FACE: "+currentShapePosition(child));
+          //          println("FEET: "+thePlayer.getFeet());
+          //          println("HEIGHT: "+child.getHeight());      
+          //          println("DIST: "+ thePlayer.getFeet().dist(currentShapePosition(child)));
+          lastCheckedFace = child;
+          return true;
+        } else {
+        }
+        //        }
+      }
+    }
+    return false;
+  }
+
+  float getFloorLevel(int direction) {
+    //needs a floormodel to work
+    if (mapFloorModel != null) {
+      //check every child of the model
+      for (int i = 0; i < mapFloorModel.getChildCount (); i++) {
+        PShape child = mapFloorModel.getChild(i);
+        //if a lerp of the player at walking distance find a geometry, use this as reference 
+        if (thePlayer.playerLerp(direction).dist(currentShapePosition(child)) < 400) {
+          if (thePlayer.getPosition().dist(currentShapePosition(child)) > 500) {
+            nextCheckedFace = child;
+
+            return currentShapePosition(nextCheckedFace).y;
+          }
+        }
+      }
+    }
+    return 0;
+  }
+
+  void showFloorLevel(int direction) {
+    //needs a floormodel to work
+    if (mapFloorModel != null) {
+      //check every child of the model
+      for (int i = 0; i < mapFloorModel.getChildCount (); i++) {
+        PShape child = mapFloorModel.getChild(i);
+        //if a lerp of the player at walking distance find a geometry, use this as reference 
+        if (thePlayer.playerLerp(direction).dist(currentShapePosition(child)) < 1500) {
+          if (thePlayer.getPosition().dist(currentShapePosition(child)) > 0) {
+            nextCheckedFace = child;
+            println("FLKJSDALKJ");
+          }
+        }
+      }
+      println("SHIT");
+    }
+  }
+
+
+  PVector currentShapePosition(PShape p) {
+    float averageX = (p.getVertexX(0) + p.getVertexX(1) + p.getVertexX(2)) /3.0;
+    float averageY = (p.getVertexY(0) + p.getVertexY(1) + p.getVertexY(2)) /3.0;
+    float averageZ = (p.getVertexZ(0) + p.getVertexZ(1) + p.getVertexZ(2)) /3.0;
+    PVector averagePos = new PVector(averageX, averageY, averageZ);
+    averagePos.mult(mapScale);
+    return averagePos;
+  }
+
 
 
   /////////////////////////////////////////////////////////////////////
   ///////////////////////////Shows the current map ///////////////
   ////////////////////////////////////////////////////////////////////
   void show() {
-//    mapLights();
-//    if (checkCollision()) {
-//      //instantly reverse the movement
-//      thePlayer.walk(-footstep);
-//      //sets the variables to 0 and update the camera data too.
-//      footstep = 0;
-//      stepDone= 0;
-//    }
-
     //display the current model
-    shape(mapModel);
+    if (mapModel != null && !debug) {
+      shape(mapModel);
+    }
 
     //for floor model
-    if (mapFloorModel != null) {
+    if (mapFloorModel != null && !debug) {
       shape(mapFloorModel);
     }
 
-
-    for (int i = 0; i < mapLcdText.length; i++) {
-      mapLcdText[i].nearText();
+    if (mapSkyModel != null && !debug) {
+      shape(mapSkyModel);
     }
 
-    if (tempeteActive) {
+    if (texts != null) {
+      for (lcdText t : texts) {
+        t.writeText();
+      }
+    }
+
+
+    //    if (mapFloorModel != null)
+    //      showAverage();
+
+    if (tempeteActive && !debug) {
       laTempete.showTempete();
     }
-
-    if (debug && hasFloor) {
-      drawFloor();
+    showFloorLevel(thePlayer.direction);
+    
+    if (nextCheckedFace != null) {
+      drawFace(nextCheckedFace);
     }
+  }
+
+  void initGourdi() {
+
+    //initialize the shape and set it to the position and scale   
+    if (debug) {
+      //debug map
+      mapModel = loadShape("data/debug.obj"); 
+      mapModel.scale(mapScale); 
+      mapModel.rotateZ(radians(180)); 
+      mapModel.translate(0, 0, 0);
+    } else {
+      mapFloorModel = loadShape("data/map3/map3.obj"); 
+      mapFloorModel.scale(mapScale); 
+      mapFloorModel.rotateZ(radians(180)); 
+      mapFloorModel.translate(0, -500, 0);
+
+
+      //      thePlayer.cameraJump(-2061.4045, -thePlayer.getHeight(), 1016.4433); 
+      //      thePlayer.cameraAim(-1149.944, -thePlayer.getHeight(), -763.61993);
+    }
+    //set the current map name
+    println(this.mapName+" loaded");
   }
 
   //////////////////////////PapiGARAGE/////////////////////////////
   void initPapiGarage() {
-    floorCorners = new PVector [7];
+    floorCorners = new PVector [7]; 
     //set up the floor as a collision object    
-    floorCorners[0] = new PVector (-3084.667, -849.9998, -1021.6255);
-    floorCorners[1] = new PVector (1722.3079, -850.00256, -806.89954);
-    floorCorners[2] = new PVector (1684.7804, -850.00024, -2875.14);
-    floorCorners[3] = new PVector (790.49896, -850.0002, -3563.4263);    
-    floorCorners[4] = new PVector (645.8008, -850.00037, -4738.9956);
+    floorCorners[0] = new PVector (-3084.667, -thePlayer.getHeight(), -1021.6255); 
+    floorCorners[1] = new PVector (1722.3079, -850.00256, -806.89954); 
+    floorCorners[2] = new PVector (1684.7804, -850.00024, -2875.14); 
+    floorCorners[3] = new PVector (790.49896, -850.0002, -3563.4263); 
+    floorCorners[4] = new PVector (645.8008, -850.00037, -4738.9956); 
     floorCorners[5] = new PVector (-2605.3396, -850.00037, -4892.056); 
-    floorCorners[6] = new PVector (-3084.667, -849.9998, -1021.6255);
-    hasFloor = true;
+    floorCorners[6] = new PVector (-3084.667, -849.9998, -1021.6255); 
+
     //function that compute where the collision shoud occur and the accuracy
-    computeCollisionVector(15);
+    computeCollisionVector(15); 
 
-    //    for (int i = 0; i < maNeige.length; i++) {
-    //      maNeige[i] = new Neige(random(-4000, 2000), random(-3000, 50), random(-5000, -1000));
-    //    }
-
-
-    mapLcdText = new lcdText[8];
-    mapLcdText[0] = new lcdText (160.25441, -850.00543, -3055.5469, 7, "15ans"); 
-    mapLcdText[1] = new lcdText (-842.87427, -850.00055, -1533.1855, 12, "tracteur"); 
-    mapLcdText[2] = new lcdText (299.46692, -880.4774, -4062.8794, 23, "escalier"); 
-    mapLcdText[3] = new lcdText (856.384, -850.00006, -1066.9874, 39, 5000, 45, "moteur1");
-    mapLcdText[4] = new lcdText (1355.7191, -849.99994, -1801.152, 33, "tool"); 
-    mapLcdText[5] = new lcdText (-2277.8677, -850.00024, -1182.8413, 28, "sortie", 0.2); 
-    mapLcdText[6] = new lcdText (-613.12445, -853.6523, -4502.5015, 55, "photo", 0.1);
-    mapLcdText[7] = new lcdText (-1776.3018, -850.0, -2908.1582, 1, "huilintro", true);  
-
-    thePlayer.cameraJump(-2428.1057, -thePlayer.getHeight(), -1637.1895);
-    thePlayer.cameraAim(-1516.6155, -thePlayer.getHeight(), -3417.4102);
+    thePlayer.cameraJump(-2399.593, -86.96228, 1492.4738); 
+    thePlayer.cameraAim(-2007.3064, -82.30486, 3453.619); 
     //initialize the shape and set it to the position and scale   
     if (debug) {
       mapModel = loadShape("data/debug.obj");
     } else {
-      mapModel = loadShape("data/papieGarage31Good.obj");
+      mapModel = loadShape("data/map1/papieGarage31Good.obj");
     }
-    mapModel.scale(mapScale);
-    mapModel.rotateZ(radians(180));
+    mapModel.scale(mapScale);    
+    mapModel.translate(0, -25, 0);
     //set the current map name
-    currentMap = mapName;
+    mapText = loadStrings("map1/map1_text.txt");
     println(this.mapName+" loaded");
   }
 
   //////////////////////////PapiEXT/////////////////////////////
   void initPapiExt() {
-    PVector tempeteOrigin = new PVector (2209.1995, -850.03076, -6990.256);
-    laTempete = new TempeteNeige(5000, tempeteOrigin, 20000);
-    tempeteActive = true;
-    mapLcdText = new lcdText[0];
+    PVector tempeteOrigin = new PVector (947.44763, -850.71443, 4120.506); 
+    laTempete = new TempeteNeige(5000, tempeteOrigin, 20000); 
+    tempeteActive = true; 
+
+
+    mapText = loadStrings("map2/map2_text.txt");
 
     //initialize the shape and set it to the position and scale   
     if (debug) {
       //debug map
-      mapModel = loadShape("data/debug.obj");
-      mapModel.translate(-7120.359, -0.007692218, 10896.645);
-      mapModel.rotateZ(radians(180));
+      mapFloorModel = loadShape("data/map2/map2_shop_floor1.obj"); 
+      mapFloorModel.scale(mapScale); 
+      mapFloorModel.translate(0, 0, 0);
     } else {
       //map proprieties
-      mapModel = loadShape("data/map2_shop.obj");
-      mapFloorModel = loadShape("data/map2_shop_floor1.obj");
-      thePlayer.cameraJump(-2061.4045, -thePlayer.getHeight(), 1016.4433);
-      thePlayer.cameraAim(-1149.944, -thePlayer.getHeight(), -763.61993);
-      mapModel.scale(mapScale);
-      mapModel.rotateZ(radians(180));
-      mapModel.translate(0, 0, 0);
-      mapFloorModel.scale(mapScale);
-      mapFloorModel.rotateZ(radians(180));
+      mapModel = loadShape("data/map2/map2_shop.obj"); 
+      mapModel.scale(mapScale); 
+      mapModel.translate(0, 0, 0); 
+      println("map2 main loaded");
+
+      mapFloorModel = loadShape("data/map2/map2_shop_floor1.obj"); 
+      mapFloorModel.scale(mapScale); 
       mapFloorModel.translate(0, 0, 0);
+      println("map2 floor loaded");
+
+      mapSkyModel = loadShape("data/map2/map2_shop_ciel.obj"); 
+      mapSkyModel.scale(mapScale);  
+      mapSkyModel.translate(0, 0, 0);
+      println("map2 sky loaded");
     }
+    thePlayer.cameraJump(-15790.673, -94.43428, -2025.185); 
+    thePlayer.cameraAim(-13873.002, -95.42826, -1457.8029);
     //set the current map name
-    currentMap = mapName;
     println(this.mapName+" loaded");
   }
 
-  //////////////////////////LIGHTS////////////////////////////////////////
-  //handle the light for different maps
-  void mapLights() {
-    if (this.mapName == "Papi") {
-      lights();
-      ambientLight(175, 175, 175, -893.9389, 200.0, 2306.427);
-      //      pointLight(100, 0, 110, 265, -1200, -1842);
-      //      directionalLight(100, 100, 110, 0, -0.8, -2000);
-    }
+  //////////////////////////////UTILITY////////////////////////////////////
 
-    if (this.mapName == "Ext") {
-      lights();
 
+  //this function read the mapText file and create all the needed lcdText objects
+  void createText(String textfile[]) {
+    //initialize the arrayText
+    texts = new ArrayList<lcdText>();
+    //goes throught every line of the .txt file
+    for (int i = 0; i < textfile.length; i++) {
+      //check if the line isn't blank
+      if (textfile[i].length() != 0) {
+        //checks if the first char is #, which marks a new block of text
+        if (textfile[i].charAt(0) == '#') {
+          String getName = textfile[i].substring(2);
+          //splits the second line in 3, since it contain the position of each text
+          String[] getPosition = split(textfile[i+1], ',');
+          //assings these value to a new PVector
+          PVector textPosition = new PVector(float(getPosition[0]), -thePlayer.getHeight(), float(getPosition[2]));
+          //fills a string with the text content
+          String[] theText = new String[10];
+          for (int j = 0; j < 10; j++) {
+            int lineToAdd = i+2+j;
+            if (textfile[lineToAdd].length() != 0) {
+              theText[j] = textfile[lineToAdd];
+            } else {
+              j = 10;
+            }
+          }
+          //create a text 
+          texts.add(new lcdText(textPosition, i+2, getName, theText));
+        }
+      }
     }
   }
 
-  //////////////////////////////UTILITY////////////////////////////////////
+  void showAverage() {
+    for (int i = 0; i < mapFloorModel.getChildCount (); i++) {
+      PShape child = mapFloorModel.getChild(i);
+      if (i % 3 == 0) 
+        showTarget(currentShapePosition(child).x, currentShapePosition(child).y, currentShapePosition(child).z);
+    }
+  }
+
+
   //create collision vectors if it has a floor
   void computeCollisionVector(int precision) {
     //checks if said map has a floor
-    if (hasFloor) {
+    if (mapFloorModel != null) {
       //calculate the number of collision vertex to be created in relation ship to the number of borders and precision
-      collisionVectorIndex = precision * (floorCorners.length-1);
-      floorCollision = new PVector [collisionVectorIndex];
+      collisionVectorIndex = precision * (floorCorners.length-1); 
+      floorCollision = new PVector [collisionVectorIndex]; 
       //goes through all the edges of the floor
       for (int i = 0; i < floorCorners.length-1; i++) {
         //sets an origin
-        PVector current = new PVector (0, 0, 0);
+        PVector current = new PVector (0, 0, 0); 
         //and a destination
-        PVector target = new PVector (0, 0, 0);   
+        PVector target = new PVector (0, 0, 0); 
         // assigns a floor corner to the origin     
-        current.set(floorCorners[i]);
+        current.set(floorCorners[i]); 
         // and assign a nother floor corner to the destination
-        target.set(floorCorners[i+1]);
+        target.set(floorCorners[i+1]); 
 
         //goes from the origin to the destination and devides the vertex lenght byt the precision amount
         for (int j = 0; j < precision; j++) {
@@ -199,40 +327,21 @@ class Map {
     println(mapName + collisionVectorIndex);
   }
 
-  void drawFloor() {
-    if (debug && hasFloor) {
-      fill(255, 0, 0);
-      beginShape();
-      for (int i = 0; i < floorCorners.length; i++) {
-        vertex(floorCorners[i].x, -125, floorCorners[i].z);
-      } 
-      endShape(CLOSE);
-      noFill();
-    }
-  }
-
-  //a boolean funtion to check the collision
-  boolean checkCollision () {
-    //needs a floor to happen
-    if (hasFloor) {
-      //checks through all the collision vector
-      for (int i = 0; i < collisionVectorIndex; i++) {
-        //if one of these vector is too close to the camera  
-        if (floorCollision[i].dist(thePlayer.getPosition()) < 250) {
-          //print which one and return true          
-          println("Dist"+i+" "+floorCollision[i].dist(thePlayer.getPosition()));
-          return true;
-        }
-      }
-    }
-    //if none, just return false
-    return false;
-  }
-  /////////////////////////////DISPLAY ITEMS  
-  void items() {
-    for (int i = 0; i < 1; i++) {
-      myItems[i].show();
-    }
-  }
+  //  //a boolean funtion to check the collision
+  //  boolean checkCollision () {
+  //    //needs a floor to happen
+  //      //checks through all the collision vector
+  //      for (int i = 0; i < collisionVectorIndex; i++) {
+  //        //if one of these vector is too close to the camera  
+  //        if (floorCollision[i].dist(thePlayer.getPosition()) < 250) {
+  //          //print which one and return true          
+  //          println("Dist"+i+" "+floorCollision[i].dist(thePlayer.getPosition())); 
+  //          return true;
+  //        }
+  //      }
+  //    }
+  //    //if none, just return false
+  //    return false;
+  //  }
 }
 

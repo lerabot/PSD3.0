@@ -3,26 +3,32 @@
 //This is where all the camera info should be.
 ////////////////////////////////
 
-class Player {
-  Camera playerCamera;
+Player thePlayer;
 
+class Player {
+  //hold the camera position and target
+  Camera playerCamera;
+  Map activeMap;
   PVector playerPosition;
   PVector playerTarget;
-  //this is important has it set the camera elevatio from the floor
-  float playerHeight = 850;
+  PVector playerHeadMovement;
+  int direction;
+  float nextY;
+  //this is important has it set the camera elevation from the floor
+  float playerHeight = 100;
+  //flag to allow or not movement
   boolean canMove = true;
   boolean canRotate = true;
+  boolean onFloor;
 
-  //offset from the camera, to measure the player's height
-  int explorerHeight = 850;
 
-  //variable related to the walk action
+  //variable related to the walk action 
   int walkDirection = 0; // 0=stop 1=forward -1=backward
-  final float walkDistance = 300; //
-  float walkStep = 25; //
-  int walkDone = 0;
-  float walkBumpAngle = TWO_PI/walkStep;
-  float walkBumpIncr = 0;
+  final float walkDistance = 400; //
+  float walkAnimationLength = 25; //
+  int currentWalkFrame = 0;
+  float walkBumpAngle;
+  float yDistance;
 
   //same as up here but for rotation movement
   float rotationAngle = 0;
@@ -30,25 +36,25 @@ class Player {
   int rotationDone = 0;
 
 
+
   Player(Camera cam) {      
     this.playerCamera = cam;
-    //sets the pedrspective
+    //sets the perspective
     this.playerCamera.zoom(0.01);
     //feed the camPosition variable with the initial position
-    float[] camPosition = playerCamera.position();
-    float[] camTarget = playerCamera.target();
-    playerPosition = new PVector (camPosition[0], camPosition[1], camPosition[2]);
-    playerTarget = new PVector (camTarget[0], camTarget[1], camTarget[2]);
+    playerPosition = new PVector(0, 0, 0);
+    playerTarget = new PVector(0, 0, 0);
+    playerHeadMovement = new PVector(0, 0, 0);
+    playerPosition.set(cam.position());
+    playerTarget.set(cam.target());
     canMove = true;
     canRotate = true;
   }
 
   //render the scene depending on camera location, this is the fonction to add in the main loop
   void render() {
-    if (canMove) 
-      walk();
-    if (canRotate) 
-      turnAround();
+    headMotion();
+    updatePosition();
     updateCameraData();
     playerCamera.feed();
   }
@@ -56,24 +62,52 @@ class Player {
   //makes sure all the camera info is up to date
   void updateCameraData() {  
     //gets the info from the explorerCam function and sets it to a float array
-    float[] camPosition = playerCamera.position();
-    float[] camTarget = playerCamera.target();
-    playerPosition = new PVector (camPosition[0], camPosition[1], camPosition[2]);
-    playerTarget = new PVector (camTarget[0], camTarget[1], camTarget[2]);
+    playerPosition.set(playerCamera.position());
+    playerTarget.set(playerCamera.target());
   }
 
-  //linear movement forward or backward
-  void walk() {
-    if (walkDirection != 0) {
-      if (walkDone < 25) {
-        playerCamera.dolly(walkDirection*(walkDistance/walkStep));
-//        playerCamera.track(0.0, 5*sin(-walkBumpAngle));
-        walkDone++;
-//        walkBumpAngle += walkBumpIncr;
+  void updatePosition() {
+    if (canMove) 
+      goTo();
+    if (canRotate) 
+      turnAround();
+  }
+
+  //  PVector getDestination(int direction) {
+  //    PVector destination = PVector.add(playerLerp(0.5), activeMap.getFloorLevel(direction));
+  //    return destination;
+  //  }
+
+  //  void showDestination() {
+  //   showTarget(getDestination());
+  //  }
+
+  //using the W A S D pattern to move the camera around
+  void checkKeypress() {
+    if (key == 97) rotationAngle = - 0.35;     //A
+    if (key == 100) rotationAngle = + 0.35;    //D
+    if (key == 119) direction = -1;           //W
+    if (key == 115) direction = 1;        //S
+  }
+
+  void goTo() {
+    if (direction != 0) {
+      if (currentWalkFrame == 0) {
+        nextY = getFeetFloorDiff(-direction);
+      }
+      if (currentWalkFrame < walkAnimationLength) {
+        //forward movement
+        playerCamera.dolly(direction*(walkDistance/walkAnimationLength));
+        //y axis mouvement
+        playerCamera.track(0.0, sin(-walkBumpAngle)*3);
+        playerCamera.track(0.0, -nextY/walkAnimationLength);
+        //the walk action happens over 25 frame, so thid acts as a counter
+        currentWalkFrame++;
+        //counter for the sin wave
+        walkBumpAngle += TWO_PI/walkAnimationLength;
       } else {
-        walkDone = 0;
-        walkDirection = 0;
-        println("reset");
+        currentWalkFrame = 0;
+        direction = 0;
       }
     }
   }
@@ -94,18 +128,23 @@ class Player {
         //resets both the angle and the incrementation variable
         rotationDone = 0;
         rotationAngle = 0;
-        println("reset A");
       }
     }
   }
 
-  //using the W A S D pattern to move the camera around
-  void cameraWASD() {
-    if (key == 97) rotationAngle = - 0.35;     //A
-    if (key == 100) rotationAngle = + 0.35;    //D
-    if (key == 119) walkDirection = 1;           //W
-    if (key == 115) walkDirection = -1;           //S
+  void headMotion() {
+    float tumbleValueX = random(-0.0002, 0.0002);
+    float tumbleValueY = random(-0.0001, 0.0001);
+    playerHeadMovement.add(tumbleValueX, tumbleValueY, 0);
+    playerHeadMovement.mult(0.50);
+    playerHeadMovement.limit(0.002);
+    playerCamera.tumble(playerHeadMovement.x, playerHeadMovement.y);
   }
+
+
+
+
+
 
   //teleports the player to said location
   void cameraJump(float x, float y, float z) {
@@ -117,6 +156,8 @@ class Player {
   }
 
 
+
+
   //ACCESSORS AND OTHER SHORT FUNCTIONS////////////////////////////////////////////////
   PVector getPosition() {
     return playerPosition;
@@ -126,8 +167,49 @@ class Player {
     return playerTarget;
   }
 
+  PVector getDirection() {
+    return PVector.sub(playerPosition, playerTarget);
+  }
+
   float getHeight() {
     return playerHeight;
+  }
+
+  PVector getFeet() {
+    return new PVector (playerPosition.x, playerPosition.y+playerHeight, playerPosition.z);
+  }
+
+  float getFeetAsFloat() {
+    return playerPosition.y+playerHeight;
+  }
+
+  float getFeetFloorDiff(int direction) {
+    return getFeetAsFloat() - activeMap.getFloorLevel(direction);
+  }
+
+  float getAngle() {
+    return getDirection().heading();
+  }
+
+  void setMap(Map theMap) {
+    activeMap = theMap;
+  } 
+
+  Map getMap() {
+    return activeMap;
+  }
+
+  PVector playerLerp(float lerpDist) {
+    //normalize and set the scale to 1000, so you get info from 0 to 1000 pixel
+    playerTarget.normalize();
+    playerTarget.setMag(1000);
+    return PVector.lerp(thePlayer.getPosition(), thePlayer.getTarget(), lerpDist);
+  }
+
+  PVector playerDirection(int walkDir) {
+    playerTarget.normalize();
+    playerTarget.setMag(1000);
+    return PVector.lerp(thePlayer.getPosition(), thePlayer.getTarget(), 1);
   }
 }
 
