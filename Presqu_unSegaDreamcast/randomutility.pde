@@ -55,20 +55,7 @@ void captureFrame() {
 }
 
 
-/////KEYPRESSES//////
-void keyPressed() {  
-  //for camera movement using ASWD
-  thePlayer.checkKeypress();
-  //start a capture of frames
-  if (key == 'c') {
-    captureOn =! captureOn;
-    println("Capture "+captureOn);
-  }
-  //exit the software
-  if (key == 27) exit();
-  //switched the debug mode
-  if (key == 112) debug = !debug;
-}
+
 
 void mouseClicked() {
   //  println("Feet "+thePlayer.getFeet());

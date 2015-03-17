@@ -54,7 +54,7 @@ class Player {
 
   //render the scene depending on camera location, this is the fonction to add in the main loop
   void render() {
-    if (inMap) {
+    if (activeMap != null) {
       headMotion();
       updatePosition();
     }

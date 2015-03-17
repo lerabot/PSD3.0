@@ -6,7 +6,7 @@
  */
 
 //simple flag to get faster loading if I don't need all the models
-boolean debug = true;
+boolean debug = false;
 
 void setup() {
   size(1280, 720, P3D);
@@ -15,17 +15,15 @@ void setup() {
   theFont = loadFont("psdFont.vlw");
 
   //GUI///////////////////////////////////////////////////////////////
-
+  theGUI = new GUI();
   //Camera///////////////////////////////////////////////////////////////
   explorerCam = new Camera (this, 0.85, 1.77, 100, 100000);
   thePlayer = new Player(explorerCam);
-  theGUI = new GUI();
-  //Maps///////////////////////////////////////////////////////////////
-  //initialize the first map to be showed
 
+  //Maps///////////////////////////////////////////////////////////////
   //myPapiGarage = new Map(-30, "Garage"); 
   //myPapiExt = new Map(-3, "Ext"); 
-  // myGourdi = new Map(-1, "Gourdi");
+  //myGourdi = new Map(-1, "Gourdi");
 }
 
 
@@ -33,7 +31,8 @@ void setup() {
 void draw() {
   background(0);
   time = millis();
-  progression();      
+  progression(); 
+
   thePlayer.render();
   theGUI.display();
 }
@@ -46,9 +45,31 @@ void draw() {
 
 //The main display of the game happpens here
 void progression() {
-  if (thePlayer.activeMap != null)
+  if (thePlayer.activeMap != null) {
     thePlayer.getMap().show();
+  } else {
+    theGUI.GUImenu();
+  }
   captureFrame();
+}
+
+/////KEYPRESSES//////
+void keyPressed() {  
+  //for camera movement using ASWD
+  if (thePlayer.activeMap != null) {
+    thePlayer.checkKeypress();
+  } else {
+    theGUI.checkKeypress();
+  }
+  //start a capture of frames
+  if (key == 'c') {
+    captureOn =! captureOn;
+    println("Capture "+captureOn);
+  }
+  //exit the software
+  if (key == 27) exit();
+  //switched the debug mode
+  if (key == 112) debug = !debug;
 }
 
 //BASIC TEST FOR INTRO SCREEN, WILL PROBABLY GET TRASHED SOON

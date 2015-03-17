@@ -156,11 +156,11 @@ class Map {
     if (tempeteActive && !debug) {
       laTempete.showTempete();
     }
-    showFloorLevel(thePlayer.direction);
+//    showFloorLevel(thePlayer.direction);
     
-    if (nextCheckedFace != null) {
-      drawFace(nextCheckedFace);
-    }
+//    if (nextCheckedFace != null) {
+//      drawFace(nextCheckedFace);
+//    }
   }
 
   void initGourdi() {
