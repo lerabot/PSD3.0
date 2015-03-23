@@ -11,7 +11,7 @@ The screen is used to display all the text (dialogue / though / observation) in 
 
 V0.5 - Currently being worked on
 * Focusing mainly on the floor detection / collision detection parts
-* Needs a intro screen with level selection
+* Needs a intro screen with level selection - 'DONE'
 * Needs a loading screen
 
 
