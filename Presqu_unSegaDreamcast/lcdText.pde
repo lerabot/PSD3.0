@@ -41,7 +41,7 @@ class lcdText {
         theGUI.clean();
         for (int i = 0; i < theText.length; i++) {            
           if (theText[i] != null) {
-            theGUI.GUItext(theText[i], position);              
+            theGUI.writeText(theText[i], position);              
             position++;
           }
         }

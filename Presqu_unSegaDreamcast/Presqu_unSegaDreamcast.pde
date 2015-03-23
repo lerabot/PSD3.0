@@ -11,6 +11,7 @@ boolean debug = false;
 void setup() {
   size(1280, 720, P3D);
   //the text stuff
+
   neigeImg = loadImage("neige.png");
   theFont = loadFont("psdFont.vlw");
 
@@ -19,20 +20,16 @@ void setup() {
   //Camera///////////////////////////////////////////////////////////////
   explorerCam = new Camera (this, 0.85, 1.77, 100, 100000);
   thePlayer = new Player(explorerCam);
-
-  //Maps///////////////////////////////////////////////////////////////
-  //myPapiGarage = new Map(-30, "Garage"); 
-  //myPapiExt = new Map(-3, "Ext"); 
-  //myGourdi = new Map(-1, "Gourdi");
 }
 
 
 //DRAW////////////////////////////////////////
 void draw() {
+  lights();
   background(0);
   time = millis();
   progression(); 
-
+  theGUI.checkMenu();
   thePlayer.render();
   theGUI.display();
 }
@@ -46,30 +43,41 @@ void draw() {
 //The main display of the game happpens here
 void progression() {
   if (thePlayer.activeMap != null) {
+
     thePlayer.getMap().show();
   } else {
-    theGUI.GUImenu();
+    theGUI.showSplash();
   }
   captureFrame();
 }
 
+void keyReleased() {
+  keyReady = true;
+}
+
 /////KEYPRESSES//////
-void keyPressed() {  
+void keyPressed() { 
+
   //for camera movement using ASWD
-  if (thePlayer.activeMap != null) {
-    thePlayer.checkKeypress();
-  } else {
+  if (theGUI.activeMenu != null) {
+
     theGUI.checkKeypress();
+  } else if (thePlayer.activeMap != null) {
+    thePlayer.checkKeypress();
   }
   //start a capture of frames
   if (key == 'c') {
     captureOn =! captureOn;
     println("Capture "+captureOn);
   }
+  if (key == 'q') {
+    theGUI.activeMenu = "pause";
+  }
   //exit the software
   if (key == 27) exit();
   //switched the debug mode
   if (key == 112) debug = !debug;
+  keyReady = false;
 }
 
 //BASIC TEST FOR INTRO SCREEN, WILL PROBABLY GET TRASHED SOON

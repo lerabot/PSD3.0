@@ -97,6 +97,7 @@ class Player {
     if (direction != 0) {
       if (currentWalkFrame == 0) {
         nextY = getFeetFloorDiff(-direction);
+        println(nextY);
       }
       if (currentWalkFrame < walkAnimationLength) {
         //forward movement
@@ -212,7 +213,7 @@ class Player {
   PVector playerDirection(int walkDir) {
     playerTarget.normalize();
     playerTarget.setMag(1000);
-    return PVector.lerp(thePlayer.getPosition(), thePlayer.getTarget(), 1);
+    return PVector.lerp(thePlayer.getPosition(), thePlayer.getTarget(), 0.3);
   }
 }
 

@@ -2,11 +2,6 @@
 //Map related stuff is here
 ///////////////////////////////////////////
 
-//MAPS///////////////////
-Map myPapiGarage;
-Map myPapiExt;
-Map myGourdi;
-
 class Map {
   //ATTRIBUTES
   int mapScale;
@@ -156,11 +151,11 @@ class Map {
     if (tempeteActive && !debug) {
       laTempete.showTempete();
     }
-//    showFloorLevel(thePlayer.direction);
-    
-//    if (nextCheckedFace != null) {
-//      drawFace(nextCheckedFace);
-//    }
+    //    showFloorLevel(thePlayer.direction);
+
+    //    if (nextCheckedFace != null) {
+    //      drawFace(nextCheckedFace);
+    //    }
   }
 
   void initGourdi() {
@@ -170,12 +165,10 @@ class Map {
       //debug map
       mapModel = loadShape("data/debug.obj"); 
       mapModel.scale(mapScale); 
-      mapModel.rotateZ(radians(180)); 
       mapModel.translate(0, 0, 0);
     } else {
       mapFloorModel = loadShape("data/map3/map3.obj"); 
       mapFloorModel.scale(mapScale); 
-      mapFloorModel.rotateZ(radians(180)); 
       mapFloorModel.translate(0, -500, 0);
 
 
@@ -183,6 +176,7 @@ class Map {
       //      thePlayer.cameraAim(-1149.944, -thePlayer.getHeight(), -763.61993);
     }
     //set the current map name
+    mapText = loadStrings("map3/map3_text.txt");
     println(this.mapName+" loaded");
   }
 

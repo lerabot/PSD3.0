@@ -2,7 +2,7 @@ GUI theGUI;
 
 class GUI {//graphical user interface (CURRENTLY IN TESTING)
   PImage textBox;
-
+  boolean showGUI = true;
   color bgColor = color(200);
   final int textSize = 14;  //14 is cute
   final int xTextMargin = 10;
@@ -12,32 +12,36 @@ class GUI {//graphical user interface (CURRENTLY IN TESTING)
   int GUIheight = 80; 
   int menuSelection;
   String activeMenu;
+  PImage splash;
 
   GUI() {
     textBox = loadImage("textbox.png");
+    splash = loadImage("splash.png");
     GUIrender = createGraphics(GUIwidth, GUIheight, P3D);
     GUIrender.beginDraw();
     GUIrender.image(textBox, 0, 0);
     //    GUIrender.textFont(theFont, 60);
     GUIrender.textAlign(LEFT, TOP);
     GUIrender.endDraw();
+    activeMenu = "main";
   }
 
   void display() {
-    pushMatrix();
-    if (thePlayer.activeMap != null) {
-      translate(GUIpos().x, GUIpos().y, GUIpos().z);
-      PVector subb = PVector.sub(GUIpos(), thePlayer.getPosition());
-      println(subb.mag());
-      scale(0.25);
-    } else {
-      translate(0, 0, 0);
-      scale(1);
+    if (showGUI) {
+      pushMatrix();
+      if (thePlayer.activeMap != null) {
+        translate(GUIpos().x, GUIpos().y, GUIpos().z);
+        PVector subb = PVector.sub(GUIpos(), thePlayer.getPosition());
+        scale(0.25);
+      } else {
+        translate(0, 0, 0);
+        scale(1);
+      }
+      rotateY(frontPlane());
+      imageMode(CENTER);
+      image(GUIrender, 0, 270);
+      popMatrix();
     }
-    rotateY(frontPlane());
-    imageMode(CENTER);
-    image(GUIrender, 0, 270);
-    popMatrix();
   }
 
   void clean() {
@@ -46,10 +50,7 @@ class GUI {//graphical user interface (CURRENTLY IN TESTING)
     GUIrender.endDraw();
   }
 
-  void updateGUI() {
-  }
-
-  void GUIloading() {
+  void loading() {
     GUIrender.beginDraw();
     GUIrender.fill(0);
     GUIrender.textSize(textSize);
@@ -57,7 +58,7 @@ class GUI {//graphical user interface (CURRENTLY IN TESTING)
     GUIrender.endDraw();
   }
 
-  void GUItext(String input) {
+  void writeText(String input) {
     GUIrender.beginDraw();
     GUIrender.fill(0);
     GUIrender.textSize(textSize);
@@ -65,7 +66,7 @@ class GUI {//graphical user interface (CURRENTLY IN TESTING)
     GUIrender.endDraw();
   }
 
-  void GUItext(String input, int yPos) {
+  void writeText(String input, int yPos) {
     GUIrender.beginDraw();
     GUIrender.fill(0);
     GUIrender.textSize(textSize);
@@ -73,7 +74,7 @@ class GUI {//graphical user interface (CURRENTLY IN TESTING)
     GUIrender.endDraw();
   }
 
-  void GUItext(float[] input, String name, int yPos) {
+  void writeText(float[] input, String name, int yPos) {
     GUIrender.beginDraw();
     GUIrender.stroke(200);
     GUIrender.strokeWeight(5);
@@ -82,31 +83,112 @@ class GUI {//graphical user interface (CURRENTLY IN TESTING)
     GUIrender.endDraw();
   }
 
-  void GUImenu() {
-    activeMenu = "main";
-    menuSelection = constrain(menuSelection, 0, 1);
+  void checkMenu() {
+    if (activeMenu != null ) {
+      if (activeMenu == "map")
+        mapMenu();
+      if (activeMenu == "main")
+        mainMenu();
+      if (activeMenu == "pause")
+        pauseMenu();
+    }
+  }
+
+  void mainMenu() {
+    menuSelection = constrain(menuSelection, 0, 2);
     clean();
     GUIrender.beginDraw();
     GUIrender.fill(0);
     GUIrender.textSize(textSize);
     GUIrender.text("     Start", xTextMargin, yOffset+(yTextMargin*0));
     GUIrender.text("     Exit", xTextMargin, yOffset+(yTextMargin*1));
+    GUIrender.text("     Debug", xTextMargin, yOffset+(yTextMargin*2));
     GUIrender.text("->", xTextMargin, yOffset+(yTextMargin*menuSelection));
     GUIrender.endDraw();
-    if (menuSelection == 0 && key == 100) {
+    if (menuSelection == 0 && key == 'd' && keyReady) {
+      activeMenu = "map";
       clean();
-      myPapiGarage = new Map(-30, "Garage");
     }
-    if (menuSelection == 1 && key == 100) {
+    if (menuSelection == 1 && key == 'd' && keyReady) {
       exit();
     }
+    if (menuSelection == 2 && key == 'd' && keyReady) {
+      activeMenu = "map";
+      debug = true;
+      clean();
+    }
+    keyReady = false;
+  }
+
+  void pauseMenu() {
+    menuSelection = constrain(menuSelection, 0, 2);
+    clean();
+    GUIrender.beginDraw();
+    GUIrender.fill(0);
+    GUIrender.textSize(textSize);
+    GUIrender.text("     Re-Start", xTextMargin, yOffset+(yTextMargin*0));
+    GUIrender.text("     Exit", xTextMargin, yOffset+(yTextMargin*1));
+    GUIrender.text("->", xTextMargin, yOffset+(yTextMargin*menuSelection));
+    GUIrender.endDraw();
+    if (menuSelection == 0 && key == 'd' && keyReady) {
+      activeMenu = "map";
+      clean();
+    }
+    if (menuSelection == 1 && key == 'd' && keyReady) {
+      exit();
+    }
+    keyReady = false;
+  }
+
+  void mapMenu () {
+    menuSelection = constrain(menuSelection, 0, 3);
+    clean();
+    GUIrender.beginDraw();
+    GUIrender.fill(0);
+    GUIrender.textSize(textSize);
+    GUIrender.text("     Garage", xTextMargin, yOffset+(yTextMargin*0));
+    GUIrender.text("     Exterieur", xTextMargin, yOffset+(yTextMargin*1));
+    GUIrender.text("     Gourdi", xTextMargin, yOffset+(yTextMargin*2));
+    GUIrender.text("     Flush", xTextMargin, yOffset+(yTextMargin*3));
+    GUIrender.text("->", xTextMargin, yOffset+(yTextMargin*menuSelection));
+    GUIrender.endDraw();
+    //garage
+    if (menuSelection == 0 && key == 'd' && keyReady) {
+      clean();
+      thePlayer.activeMap = new Map(-30, "Garage");
+      activeMenu = null;
+    }
+    //ext
+    if (menuSelection == 1 && key == 'd' && keyReady) {
+      clean();
+      thePlayer.activeMap = new Map(-3, "Ext");
+      activeMenu = null;
+    }
+    //gourdi
+    if (menuSelection == 2 && key == 'd' && keyReady) {
+      clean();
+      thePlayer.activeMap = new Map(-1, "Gourdi");
+      activeMenu = null;
+    }
+    if (menuSelection == 3 && key == 'd' && keyReady) {
+      clean();
+      thePlayer.activeMap = null;
+    }
+
+    keyReady = false;
+  }
+
+  void showSplash() {
+
+    image(splash, 0, -50);
   }
 
   void checkKeypress() {
-    if (key == 97);    //A
-    if (key == 100);     //D
-    if (key == 119) menuSelection -= 1;           //W
-    if (key == 115) menuSelection += 1;        //S
+    if (key == 'o') showGUI = !showGUI;
+    if (key == 'a');    //A
+    if (key == 'd');     //D
+    if (key == 'w') menuSelection -= 1;           //W
+    if (key == 's') menuSelection += 1;        //S
   }
 
   //puts the GUI in front of the camera object

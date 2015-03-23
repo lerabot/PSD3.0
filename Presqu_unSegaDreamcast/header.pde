@@ -31,9 +31,9 @@ PImage neigeImg;
 PGraphics GUIrender;
 PGraphics gameVisual;
 PImage loading;
-
-
 String currentMap;
 
 
+
+boolean keyReady;
 
