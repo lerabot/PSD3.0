@@ -87,6 +87,7 @@ class Player {
 
   //using the W A S D pattern to move the camera around
   void checkKeypress() {
+    if (key == 'o') theGUI.showGUI = !theGUI.showGUI;
     if (key == 97) rotationAngle = - 0.35;     //A
     if (key == 100) rotationAngle = + 0.35;    //D
     if (key == 119) direction = -1;           //W
@@ -96,7 +97,8 @@ class Player {
   void goTo() {
     if (direction != 0) {
       if (currentWalkFrame == 0) {
-        nextY = getFeetFloorDiff(-direction);
+//        nextY = getFeetFloorDiff(-direction);
+        nextY = 0;
         println(nextY);
       }
       if (currentWalkFrame < walkAnimationLength) {
@@ -118,6 +120,7 @@ class Player {
 
   //rotation around the Y axis, or panorama
   void turnAround() {
+    
     //check the rotation Angle for a value change
     if (rotationAngle != 0) {
       //since the operation happens overtime, it check where the index for its current poisition
@@ -141,7 +144,7 @@ class Player {
     float tumbleValueY = random(-0.0001, 0.0001);
     playerHeadMovement.add(tumbleValueX, tumbleValueY, 0);
     playerHeadMovement.mult(0.50);
-    playerHeadMovement.limit(0.002);
+    playerHeadMovement.limit(0.001);
     playerCamera.tumble(playerHeadMovement.x, playerHeadMovement.y);
   }
 

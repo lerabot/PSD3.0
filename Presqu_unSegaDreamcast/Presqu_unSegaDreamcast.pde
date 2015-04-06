@@ -25,7 +25,7 @@ void setup() {
 
 //DRAW////////////////////////////////////////
 void draw() {
-  lights();
+//  lights();
   background(0);
   time = millis();
   progression(); 
@@ -43,7 +43,6 @@ void draw() {
 //The main display of the game happpens here
 void progression() {
   if (thePlayer.activeMap != null) {
-
     thePlayer.getMap().show();
   } else {
     theGUI.showSplash();

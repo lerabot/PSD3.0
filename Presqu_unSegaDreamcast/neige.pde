@@ -39,7 +39,7 @@ class TempeteNeige {
         n.applyForce(gravity);
         n.updateLocation();
         n.display();
-        if (n.location.y > random(600)) {
+        if (n.location.y > random(400,800)) {
           location.set(thePlayer.playerPosition);
           laNeige.remove(i);
           laNeige.add(new Neige(random(location.x-tempeteSize/2, location.x+tempeteSize/2), -5000, random(location.z-tempeteSize/2, location.z+tempeteSize/2)));
