@@ -8,7 +8,7 @@ class GUI {//graphical user interface (CURRENTLY IN TESTING)
   final int xTextMargin = 10;
   final int yTextMargin = 15;
   final int yOffset = 7;
-  int GUIwidth = 720; 
+  int GUIwidth = 400; 
   int GUIheight = 80; 
   int menuSelection;
   String activeMenu;
@@ -149,7 +149,7 @@ class GUI {//graphical user interface (CURRENTLY IN TESTING)
     GUIrender.text("     Garage", xTextMargin, yOffset+(yTextMargin*0));
     GUIrender.text("     Exterieur", xTextMargin, yOffset+(yTextMargin*1));
     GUIrender.text("     Gourdi", xTextMargin, yOffset+(yTextMargin*2));
-    GUIrender.text("     Retour", xTextMargin, yOffset+(yTextMargin*3));
+    GUIrender.text("     Flush", xTextMargin, yOffset+(yTextMargin*3));
     GUIrender.text("->", xTextMargin, yOffset+(yTextMargin*menuSelection));
     GUIrender.endDraw();
     //garage
@@ -172,8 +172,7 @@ class GUI {//graphical user interface (CURRENTLY IN TESTING)
     }
     if (menuSelection == 3 && key == 'd' && keyReady) {
       clean();
-      thePlayer.activeMap = new Map(-3, "Retour");
-      activeMenu = null;
+      thePlayer.activeMap = null;
     }
 
     keyReady = false;

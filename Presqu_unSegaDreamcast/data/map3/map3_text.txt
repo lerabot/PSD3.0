@@ -1,15 +1,15 @@
 #1 intro
-3461.9238, -131.37115, -1075.6722
+160, 0, 400
 Ça fait longtemps
 Quand même
 
 #2
-3757.1118, -1.3083783, -684.41766
+160, 0, 400
 On était dans un
 desert, y ventait
 
 #3
-2577.2144, 2.3921251, -4085.6716
+160, 0, 400
 C'était aride, on
 s'aurais cru dans
 une dune ou sur une 

@@ -35,7 +35,6 @@ class Map {
     this.mapScale = mapScale;
     if (this.mapName == "Garage") initPapiGarage();
     if (this.mapName == "Ext") initPapiExt();
-    if (this.mapName == "Retour") initPapiRetour();
     if (this.mapName == "Gourdi") initGourdi();
     createText(mapText);
     thePlayer.setMap(this);
@@ -50,6 +49,7 @@ class Map {
     shape(lastCheckedFace);
     lastCheckedFace.endShape(CLOSE);
   }
+
 
   boolean checkFloor() {
     if (mapFloorModel != null) {
@@ -81,6 +81,7 @@ class Map {
         if (thePlayer.playerLerp(direction).dist(currentShapePosition(child)) < 400) {
           if (thePlayer.getPosition().dist(currentShapePosition(child)) > 500) {
             nextCheckedFace = child;
+
             return currentShapePosition(nextCheckedFace).y;
           }
         }
@@ -106,6 +107,7 @@ class Map {
       println("SHIT");
     }
   }
+
 
   PVector currentShapePosition(PShape p) {
     float averageX = (p.getVertexX(0) + p.getVertexX(1) + p.getVertexX(2)) /3.0;
@@ -141,6 +143,8 @@ class Map {
         t.writeText();
       }
     }
+
+
     //    if (mapFloorModel != null)
     //      showAverage();
 
@@ -159,16 +163,18 @@ class Map {
     //initialize the shape and set it to the position and scale   
     if (debug) {
       //debug map
-      mapModel = loadShape("data/map3/map3.obj"); 
+      mapModel = loadShape("data/debug.obj"); 
       mapModel.scale(mapScale); 
-      mapModel.translate(0, -500, 0);
+      mapModel.translate(0, 0, 0);
     } else {
       mapFloorModel = loadShape("data/map3/map3.obj"); 
       mapFloorModel.scale(mapScale); 
       mapFloorModel.translate(0, -500, 0);
+
+
+      //      thePlayer.cameraJump(-2061.4045, -thePlayer.getHeight(), 1016.4433); 
+      //      thePlayer.cameraAim(-1149.944, -thePlayer.getHeight(), -763.61993);
     }
-    thePlayer.cameraJump(1341.1835, -thePlayer.getHeight(), 2589.0117); 
-    thePlayer.cameraAim(2244.692, -thePlayer.getHeight(), 804.9005);
     //set the current map name
     mapText = loadStrings("map3/map3_text.txt");
     println(this.mapName+" loaded");
@@ -235,41 +241,6 @@ class Map {
       mapSkyModel.scale(mapScale);  
       mapSkyModel.translate(0, 0, 0);
       println("map2 sky loaded");
-    }
-    thePlayer.cameraJump(-15790.673, -94.43428, -2025.185); 
-    thePlayer.cameraAim(-13873.002, -95.42826, -1457.8029);
-    //set the current map name
-    println(this.mapName+" loaded");
-  }
-  
-    //////////////////////////Le retour/////////////////////////////
-  void initPapiRetour() {
-    PVector tempeteOrigin = new PVector (947.44763, -850.71443, 4120.506); 
-    laTempete = new TempeteNeige(5000, tempeteOrigin, 20000); 
-    tempeteActive = true; 
-
-
-    mapText = loadStrings("map2/map2_text.txt");
-
-    //initialize the shape and set it to the position and scale   
-    if (debug) {
-      //debug map
-      mapFloorModel = loadShape("data/map4/map2_shop_floor1.obj"); 
-      mapFloorModel.scale(mapScale); 
-      mapFloorModel.translate(0, 0, 0);
-    } else {
-      //map proprieties
-      mapModel = loadShape("data/map4/map4_shop.obj"); 
-      mapModel.scale(mapScale); 
-      mapModel.translate(0, 0, 0); 
-
-      mapFloorModel = loadShape("data/map4/map2_shop_floor1.obj"); 
-      mapFloorModel.scale(mapScale); 
-      mapFloorModel.translate(0, 0, 0);
-
-      mapSkyModel = loadShape("data/map4/map2_shop_ciel.obj"); 
-      mapSkyModel.scale(mapScale);  
-      mapSkyModel.translate(0, 0, 0);
     }
     thePlayer.cameraJump(-15790.673, -94.43428, -2025.185); 
     thePlayer.cameraAim(-13873.002, -95.42826, -1457.8029);
