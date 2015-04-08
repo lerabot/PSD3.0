@@ -25,7 +25,7 @@ void setup() {
 
 //DRAW////////////////////////////////////////
 void draw() {
-//  lights();
+  //  lights();
   background(0);
   time = millis();
   progression(); 
@@ -58,11 +58,11 @@ void keyReleased() {
 void keyPressed() { 
 
   //for camera movement using ASWD
-  if (theGUI.activeMenu != null) {
+  if (theGUI.activeMenu() != null) {
 
-    theGUI.checkKeypress();
+    theGUI.keyPressed();
   } else if (thePlayer.activeMap != null) {
-    thePlayer.checkKeypress();
+    thePlayer.keyPressed();
   }
   //start a capture of frames
   if (key == 'c') {
@@ -70,7 +70,7 @@ void keyPressed() {
     println("Capture "+captureOn);
   }
   if (key == 'q') {
-    theGUI.activeMenu = "pause";
+    theGUI.setMenu("pause");
   }
   //exit the software
   if (key == 27) exit();

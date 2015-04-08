@@ -86,12 +86,12 @@ class Player {
   //  }
 
   //using the W A S D pattern to move the camera around
-  void checkKeypress() {
+  void keyPressed() {
     if (key == 'o') theGUI.showGUI = !theGUI.showGUI;
-    if (key == 97) rotationAngle = - 0.35;     //A
-    if (key == 100) rotationAngle = + 0.35;    //D
-    if (key == 119) direction = -1;           //W
-    if (key == 115) direction = 1;        //S
+    if (key == 'a') rotationAngle = - 0.35;     //A
+    if (key == 'd') rotationAngle = + 0.35;    //D
+    if (key == 'w') direction = -1;           //W
+    if (key == 's') direction = 1;        //S
   }
 
   void goTo() {

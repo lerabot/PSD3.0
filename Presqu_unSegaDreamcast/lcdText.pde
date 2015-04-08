@@ -38,7 +38,7 @@ class lcdText {
       if (textPosition.dist(textReach()) < 400) {
         ballColor = color(0, 255, 0);
         int position = 0;
-        theGUI.clean();
+        theGUI.cleanText();
         for (int i = 0; i < theText.length; i++) {            
           if (theText[i] != null) {
             theGUI.writeText(theText[i], position);              
@@ -59,7 +59,7 @@ class lcdText {
         //        }
       } else {
         if (textDisplayed) {
-          theGUI.clean();
+          theGUI.cleanText();
           textDisplayed = false;
         }
         ballColor = color(255, 0, 0);

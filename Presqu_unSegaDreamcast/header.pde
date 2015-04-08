@@ -28,7 +28,7 @@ PFont myFont;
 //VISUAL STUFF///////////////////////////
 PFont theFont;
 PImage neigeImg;
-PGraphics GUIrender;
+
 PGraphics gameVisual;
 PImage loading;
 String currentMap;
