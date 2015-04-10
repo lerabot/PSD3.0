@@ -11,25 +11,23 @@ boolean debug = false;
 void setup() {
   size(1280, 720, P3D);
   //the text stuff
-
-  neigeImg = loadImage("neige.png");
   theFont = loadFont("psdFont.vlw");
 
-  //GUI///////////////////////////////////////////////////////////////
-  theGUI = new GUI();
+
   //Camera///////////////////////////////////////////////////////////////
   explorerCam = new Camera (this, 0.85, 1.77, 100, 100000);
   thePlayer = new Player(explorerCam);
+  //GUI///////////////////////////////////////////////////////////////
+  theGUI = new GUI();
 }
 
 
 //DRAW////////////////////////////////////////
 void draw() {
   //  lights();
-  background(0);
+  background(150);
   time = millis();
   progression(); 
-  theGUI.checkMenu();
   thePlayer.render();
   theGUI.display();
 }
@@ -37,15 +35,13 @@ void draw() {
 
 
 ////////////////////////////////////////////////////
-
-
-
 //The main display of the game happpens here
 void progression() {
   if (thePlayer.activeMap != null) {
     thePlayer.getMap().show();
   } else {
-    theGUI.showSplash();
+    //shows the intro screen if no map is loaded
+    //theGUI.showIntroScreen();
   }
   captureFrame();
 }

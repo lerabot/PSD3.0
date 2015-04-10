@@ -25,8 +25,10 @@ class Map {
   ArrayList<lcdText> texts;
   String[] mapText;
 
-  TempeteNeige laTempete;
+  Weather theWeather;
   boolean tempeteActive = false;
+
+  String objective;
 
   //METHODS
   //constructor
@@ -38,6 +40,7 @@ class Map {
     if (this.mapName == "Retour") initPapiRetour();
     if (this.mapName == "Gourdi") initGourdi();
     createText(mapText);
+    println("# of text: "+texts.size());
     thePlayer.setMap(this);
   }
 
@@ -138,14 +141,14 @@ class Map {
 
     if (texts != null) {
       for (lcdText t : texts) {
-        t.writeText();
+        t.checkText();
       }
     }
     //    if (mapFloorModel != null)
     //      showAverage();
 
     if (tempeteActive && !debug) {
-      laTempete.showTempete();
+      theWeather.display();
     }
     //    showFloorLevel(thePlayer.direction);
 
@@ -155,6 +158,8 @@ class Map {
   }
 
   void initGourdi() {
+
+    objective = "Où-est Sam?";
 
     //initialize the shape and set it to the position and scale   
     if (debug) {
@@ -189,6 +194,8 @@ class Map {
     //function that compute where the collision shoud occur and the accuracy
     computeCollisionVector(15); 
 
+    objective = "Explore the area";
+
     thePlayer.cameraJump(-2399.593, -86.96228, 1492.4738); 
     thePlayer.cameraAim(-2007.3064, -82.30486, 3453.619); 
     //initialize the shape and set it to the position and scale   
@@ -207,8 +214,10 @@ class Map {
   //////////////////////////PapiEXT/////////////////////////////
   void initPapiExt() {
     PVector tempeteOrigin = new PVector (947.44763, -850.71443, 4120.506); 
-    laTempete = new TempeteNeige(5000, tempeteOrigin, 20000); 
+    theWeather = new Weather(tempeteOrigin, 50000, 3000, "snow"); 
     tempeteActive = true; 
+
+    objective = "Get into the workshop";
 
 
     mapText = loadStrings("map2/map2_text.txt");
@@ -241,15 +250,15 @@ class Map {
     //set the current map name
     println(this.mapName+" loaded");
   }
-  
-    //////////////////////////Le retour/////////////////////////////
+
+  //////////////////////////Le retour/////////////////////////////
   void initPapiRetour() {
     PVector tempeteOrigin = new PVector (947.44763, -850.71443, 4120.506); 
-    laTempete = new TempeteNeige(5000, tempeteOrigin, 20000); 
+    theWeather = new Weather(tempeteOrigin, 20000, 5000, "both"); 
     tempeteActive = true; 
 
 
-    mapText = loadStrings("map2/map2_text.txt");
+    mapText = loadStrings("map4/map2_text.txt");
 
     //initialize the shape and set it to the position and scale   
     if (debug) {
@@ -279,6 +288,23 @@ class Map {
 
   //////////////////////////////UTILITY////////////////////////////////////
 
+  String getMapName() {
+    if (mapName != null) {
+      return mapName;
+    }
+     else {
+      return "N/A";
+    }
+  }
+
+  String getObjective() {
+    if (objective != null) {
+      return objective;
+    } else {
+      return "N/A";
+    }
+  }
+
 
   //this function read the mapText file and create all the needed lcdText objects
   void createText(String textfile[]) {
@@ -293,20 +319,33 @@ class Map {
           String getName = textfile[i].substring(2);
           //splits the second line in 3, since it contain the position of each text
           String[] getPosition = split(textfile[i+1], ',');
-          //assings these value to a new PVector
-          PVector textPosition = new PVector(float(getPosition[0]), -thePlayer.getHeight(), float(getPosition[2]));
+          Boolean locationBased;
+          PVector textPosition = new PVector (0, 0, 0);
+          if (getPosition.length == 3) {
+            //assings these position to a new PVector if there's a position
+            textPosition.set(float(getPosition[0]), -thePlayer.getHeight(), float(getPosition[2]));
+            locationBased = true;
+          } else {
+            //if there's less, this mean that the text isn't meant to be triggered by position
+            textPosition.set(0, -5000, 0);
+            locationBased = false;
+          }
           //fills a string with the text content
-          String[] theText = new String[10];
-          for (int j = 0; j < 10; j++) {
+          String[] theText = new String[20];
+          boolean longText = false;
+          for (int j = 0; j < theText.length; j++) {
             int lineToAdd = i+2+j;
             if (textfile[lineToAdd].length() != 0) {
               theText[j] = textfile[lineToAdd];
+              if (j > 4) {
+                longText = true;
+              }
             } else {
-              j = 10;
+              j = theText.length;
             }
           }
           //create a text 
-          texts.add(new lcdText(textPosition, i+2, getName, theText));
+          texts.add(new lcdText(textPosition, i+2, getName, theText, locationBased, longText));
         }
       }
     }

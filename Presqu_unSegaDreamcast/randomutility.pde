@@ -50,7 +50,7 @@ void itemStick() {
 
 void captureFrame() {
   if (captureOn && frameCount % 4 == 0) {
-    saveFrame("M:/sega dreamcast/capturedFrame/frame######.tif");
+    saveFrame("M:/sega dreamcast/capturedFrame/frame######.png");
   }
 }
 

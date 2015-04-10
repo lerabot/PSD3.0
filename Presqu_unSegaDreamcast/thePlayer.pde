@@ -10,6 +10,7 @@ class Player {
   Camera playerCamera;
   Map activeMap;
   boolean inMap;
+  int inMapSince;
   PVector playerPosition;
   PVector playerTarget;
   PVector playerHeadMovement;
@@ -21,6 +22,7 @@ class Player {
   boolean canMove = true;
   boolean canRotate = true;
   boolean onFloor;
+
 
 
   //variable related to the walk action 
@@ -50,6 +52,7 @@ class Player {
     playerTarget.set(cam.target());
     canMove = true;
     canRotate = true;
+    cameraAim(0, 0, -1000);
   }
 
   //render the scene depending on camera location, this is the fonction to add in the main loop
@@ -97,9 +100,8 @@ class Player {
   void goTo() {
     if (direction != 0) {
       if (currentWalkFrame == 0) {
-//        nextY = getFeetFloorDiff(-direction);
+        //        nextY = getFeetFloorDiff(-direction);
         nextY = 0;
-        println(nextY);
       }
       if (currentWalkFrame < walkAnimationLength) {
         //forward movement
@@ -120,7 +122,7 @@ class Player {
 
   //rotation around the Y axis, or panorama
   void turnAround() {
-    
+
     //check the rotation Angle for a value change
     if (rotationAngle != 0) {
       //since the operation happens overtime, it check where the index for its current poisition
@@ -162,6 +164,14 @@ class Player {
     playerCamera.aim(x, y, z);
   }
 
+  void rotateCamera(float angle) {
+    playerCamera.pan(angle);
+  }
+
+  void tumbleCamera(float angle) {
+    playerCamera.tumble(angle, 0);
+  }
+
 
 
 
@@ -200,7 +210,12 @@ class Player {
 
   void setMap(Map theMap) {
     activeMap = theMap;
+    inMapSince = millis();
   } 
+
+  int getInMapSince() {
+    return millis() - inMapSince;
+  }
 
   Map getMap() {
     return activeMap;

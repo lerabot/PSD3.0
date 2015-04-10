@@ -27,7 +27,7 @@ PFont myFont;
 
 //VISUAL STUFF///////////////////////////
 PFont theFont;
-PImage neigeImg;
+
 
 PGraphics gameVisual;
 PImage loading;

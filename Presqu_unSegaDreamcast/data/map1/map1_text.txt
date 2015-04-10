@@ -1,10 +1,24 @@
 # intro
+
+It's been a couple
+of year since I've
+been here.
+  
+We use to come
+almost every weekend
+when I was younger.
+   
+My brother and I
+would make fires 
+and dig holes in the
+sand around the house.
+
+# first
 -1812.0168, -82.72906, 2780.197
 Always a weird smell
 in this place
 like a mix of oil
 and old blankets
-
 
 # 15ans
 70.14331, -50.586628, 2770.7236
@@ -50,14 +64,11 @@ work here tho.
 One of his many
 magnetic motor
 prototype.
-
-
-//
+     
 He's been working
 on these for the
 past 20 years.
-
-//
+          
 Actually this
 one has my name
 on it.

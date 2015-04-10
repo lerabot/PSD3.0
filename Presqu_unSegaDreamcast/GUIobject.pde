@@ -26,6 +26,16 @@ class GUIobject {
     objectRender.textAlign(LEFT, TOP);
   }
 
+  GUIobject(float xPos, float yPos, int xSize, int ySize, String imageLoc) {
+    position = new PVector(xPos, yPos, 0);
+    objectRender = createGraphics (xSize, ySize);
+    this.xSize = xSize;
+    this.ySize = ySize;   
+    bgImage = loadImage(imageLoc);
+    objectRender.image(bgImage, 0, 0);
+    objectRender.textAlign(LEFT, TOP);
+  }
+
   PGraphics drawObject() {
     return objectRender;
   }
