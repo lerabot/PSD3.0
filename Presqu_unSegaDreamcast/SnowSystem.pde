@@ -25,7 +25,6 @@ class SnowSystem {
 
     neigeImg = loadImage("neige.png");
 
-
     laNeige = new ArrayList<Particules>();
     for (int i = 0; i < totalNeige; i++) {
       //ajoute de la neige à la location. la location est le centre de la tempete.

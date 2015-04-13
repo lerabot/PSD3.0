@@ -22,6 +22,10 @@ class GUI {//graphical user interface (CURRENTLY IN TESTING)
   int lastTextTime;
   //angle of rotation for the intro camera
   float rotAngle;
+  //the name (ID) of the currenct text displayed
+  String currentTextName;
+
+  lcdText currentText;
 
   GUI() {
     dialogBox = new GUItext(0, 250, 400, 80);
@@ -44,7 +48,9 @@ class GUI {//graphical user interface (CURRENTLY IN TESTING)
       //draw the menu (images) from the center as reference
       imageMode(CENTER);
       //scale + rotate them according to the camera orientation to keep them 2D
-      rotateY(frontPlane());
+      rotateY(frontPlane()[0]);
+      rotateZ(frontPlane()[2]);
+      rotateX(-frontPlane()[1]);
       scale(0.25);
       //main GUI function
       drawGUIobjects();
@@ -110,9 +116,19 @@ class GUI {//graphical user interface (CURRENTLY IN TESTING)
     menuBox.setMenu(menuStatus);
   }
 
+  void setTextState(boolean state, lcdText thisText) {
+    isDisplayingText = state;
+    lastTextTime = millis();
+    currentText = thisText;
+  }
+
   void setTextState(boolean state) {
     isDisplayingText = state;
     lastTextTime = millis();
+  }
+
+  lcdText getCurrentText() {
+    return currentText;
   }
 
   boolean isDisplayingText() {

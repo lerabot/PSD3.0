@@ -6,46 +6,46 @@
 
 class lcdText {
   //actual text
-  String[] theText;
+  ArrayList<String> theText;
   //its position
   PVector textPosition;
-  //has the text been displayed
-  boolean textDisplayed;
   //the text "name"
   String name;
   //used for the debug color ball
   color ballColor = color(0, 20, 180);
   //when has it been displayed
   int displayedAt = 0;
-  int delaySecondText;
+  //distance at which the text is triggered
   float reachDist = 0.20;
+  //iss this text meant to be red only once?
   boolean uniqueText = false;
   //is the text a time-text?
   boolean isLocationBased;
+  //if the text is longer than 4 lines
   boolean longText = false;
-
+  //has the text arealy been read
+  boolean beenRead = false;
+  //
   int textDelay = 4500;
 
   int linePosition;
 
 
-  lcdText(PVector textPosition, int lineNum, String name, String[] theText, boolean locationBased) {
+  lcdText(PVector textPosition, int lineNum, String name, ArrayList<String> theText, boolean locationBased) {
     this.textPosition = textPosition;
-    textDisplayed = false;
     this.name = name;
     this.theText = theText;
     isLocationBased = locationBased;
   }
 
-  lcdText(PVector textPosition, int lineNum, String name, String[] theText, boolean locationBased, boolean longText) {
+  lcdText(PVector textPosition, int lineNum, String name, ArrayList<String> theText, boolean locationBased, boolean longText) {
     this.textPosition = textPosition;
-    textDisplayed = false;
     this.name = name;
     this.theText = theText;
     isLocationBased = locationBased;
     this.longText = longText;
     if (longText)
-      println("longtext");
+      println(name +"is a longtext");
   }
 
   /////////////////////////////////////////////////////
@@ -65,25 +65,27 @@ class lcdText {
       }
     } 
 
+
+
     //if there's an active text on the screen after the text display time
     if (theGUI.isDisplayingText && theGUI.noTextSince() > 3500) { 
+      //puts the ball in it's original color;
+      theGUI.getCurrentText().ballColor = color(0, 20, 180);
       //clean the text box
       theGUI.cleanText();
-      //reset the textState to empty (flase)
-      theGUI.setTextState(false);
       //does a check if it's a long text to write the other parts
-      if (longText && !textDisplayed) {
-        println("punk");
-        writeNextText();
+      if (theGUI.getCurrentText().longText && !beenRead) {
+        theGUI.getCurrentText().writeNextText();
+      } else {
+        //reset the textState to empty (flase)
+        theGUI.setTextState(false, this);
       }
-      //puts the ball in it's original color;
-      ballColor = color(0, 20, 180);
     }
 
     //this writes a non location based text after a certain delay.
-    if (theGUI.noTextSince() > 150000) {
+    if (theGUI.noTextSince() > 10000) {
       //checks if it's a location based text, and if the text as already been displayed
-      if (isLocationBased == false && textDisplayed == false) {
+      if (isLocationBased == false && beenRead == false) {
         writeText();
       }
     }
@@ -92,48 +94,54 @@ class lcdText {
 
   void writeText() {
     int position = 0;
-    theGUI.cleanText();
-    for (int i = 0; i < 4; i++) {            
-      if (theText[i] != null) {
-        theGUI.writeText(theText[i], position);              
-        position++;
-      }
-      linePosition = 4;
+    int lineLeft = 0;
+    if (linePosition >= 4) {
+      theGUI.cleanText();
+      writeNextText();
+    } else {
+      for (int i = 0; i < 4; i++) {
+        if (i < theText.size()) {  
+          if (theText.get(i) != null) {
+            theGUI.writeText(theText.get(i), position);              
+            position++;
+          }
+        }
+        linePosition = position;
+      } 
+      if (theText.size() < 4)
+        beenRead = true;
+      theGUI.setTextState(true, this);
     }
-    if (!longText)
-      textDisplayed = true;
-    theGUI.setTextState(true);
   }
 
   void writeNextText() {
     int position = 0;
-    theGUI.cleanText();
-    for (int i = linePosition; i < linePosition + 4; i++) {            
-      if (theText[i] != null && i < theText.length) {
-        theGUI.writeText(theText[i], position);              
-        position++;
-      } else if (theText[i] == null) {
-        textDisplayed = true;
+    for (int i = linePosition; i < linePosition+4; i++) { 
+      if (i < theText.size()) {   
+        if (theText.get(i) != null) {
+          theGUI.writeText(theText.get(i), position);              
+          position++;
+        }
+      } else {
+        beenRead = true;
       }
     }
     linePosition += 4;
-    if (!longText && linePosition < theText.length)
-      textDisplayed = true;
-    theGUI.setTextState(true);
+    theGUI.setTextState(true, this);
   }
 
   void textDebug() {
     //(debug) {
-      pushMatrix();
-      translate(textPosition.x, textPosition.y, textPosition.z);
-      rotateY(frontPlane());
-      //      text(name, 0, -20, 0);
-      noStroke();    
-      fill(ballColor);
-      sphereDetail(4);
-      sphere(25);
-      popMatrix();
-   // }
+    pushMatrix();
+    translate(textPosition.x, textPosition.y, textPosition.z);
+    rotateY(frontPlane()[0]);
+    //      text(name, 0, -20, 0);
+    noStroke();    
+    fill(ballColor);
+    sphereDetail(4);
+    sphere(25);
+    popMatrix();
+    // }
   }
 
   PVector textReach() {

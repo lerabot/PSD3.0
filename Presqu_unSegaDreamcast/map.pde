@@ -44,6 +44,185 @@ class Map {
     thePlayer.setMap(this);
   }
 
+
+  /////////////////////////////////////////////////////////////////////
+  ///////////////////////////Shows the current map ///////////////
+  ////////////////////////////////////////////////////////////////////
+  void show() {
+
+    //display the current model
+    if (mapModel != null && !debug) {
+      shape(mapModel);
+    }
+
+    //for floor model
+    if (mapFloorModel != null && !debug) {
+      shape(mapFloorModel);
+    }
+
+    if (mapSkyModel != null && !debug) {
+      shape(mapSkyModel);
+    }
+
+    if (texts != null) {
+      for (lcdText t : texts) {
+        t.checkText();
+      }
+    }
+    //    if (mapFloorModel != null)
+    //      showAverage();
+
+    if (tempeteActive && !debug) {
+      theWeather.display();
+    }
+
+    if (mapName == "Retour") {
+      glitchModel(mapModel);
+    }
+
+
+
+
+    if (mapName == "Garage") {
+      //thePlayer.follow(new PVector(2000, 0, 2000), 3);
+    }
+    //    showFloorLevel(thePlayer.direction);
+
+    //    if (nextCheckedFace != null) {
+    //      drawFace(nextCheckedFace);
+    //    }
+  }
+
+  void initGourdi() {
+
+    objective = "Où-est Sam?";
+
+    //initialize the shape and set it to the position and scale   
+    if (debug) {
+      //debug map
+      mapModel = loadShape("data/debug.obj"); 
+      mapModel.scale(mapScale); 
+      mapModel.translate(0, -500, 0);
+    } else {
+      mapFloorModel = loadShape("data/map3/map3.obj"); 
+      mapFloorModel.scale(mapScale); 
+      mapFloorModel.translate(0, -500, 0);
+    }
+    thePlayer.cameraJump(1341.1835, -thePlayer.getHeight(), 2589.0117); 
+    thePlayer.cameraAim(2244.692, -thePlayer.getHeight(), 804.9005);
+    //set the current map name
+    mapText = loadStrings("map3/map3_text.txt");
+    println(this.mapName+" loaded");
+  }
+
+  //////////////////////////PapiGARAGE/////////////////////////////
+  void initPapiGarage() {
+    floorCorners = new PVector [7]; 
+    //set up the floor as a collision object    
+    floorCorners[0] = new PVector (-3084.667, -thePlayer.getHeight(), -1021.6255); 
+    floorCorners[1] = new PVector (1722.3079, -850.00256, -806.89954); 
+    floorCorners[2] = new PVector (1684.7804, -850.00024, -2875.14); 
+    floorCorners[3] = new PVector (790.49896, -850.0002, -3563.4263); 
+    floorCorners[4] = new PVector (645.8008, -850.00037, -4738.9956); 
+    floorCorners[5] = new PVector (-2605.3396, -850.00037, -4892.056); 
+    floorCorners[6] = new PVector (-3084.667, -849.9998, -1021.6255); 
+
+    //function that compute where the collision shoud occur and the accuracy
+    computeCollisionVector(15); 
+
+    objective = "Explore the area";
+
+    thePlayer.cameraJump(-2399.593, -86.96228, 1492.4738); 
+    thePlayer.cameraAim(-2007.3064, -82.30486, 3453.619); 
+    //initialize the shape and set it to the position and scale   
+    if (debug) {
+      mapModel = loadShape("data/debug.obj");
+    } else {
+      mapModel = loadShape("data/map1/papieGarage31Good.obj");
+    }
+    mapModel.scale(mapScale);    
+    mapModel.translate(0, -25, 0);
+    //set the current map name
+    mapText = loadStrings("map1/map1_text.txt");
+    println(this.mapName+" loaded");
+  }
+
+  //////////////////////////PapiEXT/////////////////////////////
+  void initPapiExt() {
+    PVector tempeteOrigin = new PVector (947.44763, -850.71443, 4120.506); 
+    theWeather = new Weather(tempeteOrigin, 50000, 3000, "snow"); 
+    tempeteActive = true; 
+
+    objective = "Get into the workshop";
+
+    mapText = loadStrings("map2/map2_text.txt");
+
+    //initialize the shape and set it to the position and scale   
+    if (debug) {
+      //debug map
+      mapFloorModel = loadShape("data/map2/map2_shop_floor1.obj"); 
+      mapFloorModel.scale(mapScale); 
+      mapFloorModel.translate(0, 0, 0);
+    } else {
+      //map proprieties
+      mapModel = loadShape("data/map2/map2_shop.obj"); 
+      mapModel.scale(mapScale); 
+      mapModel.translate(0, 0, 0); 
+      println("map2 main loaded");
+
+      mapFloorModel = loadShape("data/map2/map2_shop_floor1.obj"); 
+      mapFloorModel.scale(mapScale); 
+      mapFloorModel.translate(0, 0, 0);
+      println("map2 floor loaded");
+
+      mapSkyModel = loadShape("data/map2/map2_shop_ciel.obj"); 
+      mapSkyModel.scale(mapScale);  
+      mapSkyModel.translate(0, 0, 0);
+      println("map2 sky loaded");
+    }
+    thePlayer.cameraJump(-15790.673, -94.43428, -2025.185); 
+    thePlayer.cameraAim(-13873.002, -95.42826, -1457.8029);
+    //set the current map name
+    println(this.mapName+" loaded");
+  }
+
+  //////////////////////////Le retour/////////////////////////////
+  void initPapiRetour() {
+    PVector tempeteOrigin = new PVector (947.44763, -850.71443, 4120.506); 
+    theWeather = new Weather(tempeteOrigin, 20000, 5000, "both"); 
+    tempeteActive = true; 
+
+
+    mapText = loadStrings("map4/map2_text.txt");
+
+    //initialize the shape and set it to the position and scale   
+    if (debug) {
+      //debug map
+      mapFloorModel = loadShape("data/map4/map2_shop_floor1.obj"); 
+      mapFloorModel.scale(mapScale); 
+      mapFloorModel.translate(0, 0, 0);
+    } else {
+      //map proprieties
+      mapModel = loadShape("data/map4/map4_shop.obj"); 
+      mapModel.scale(mapScale); 
+      mapModel.translate(0, 0, 0); 
+
+      mapFloorModel = loadShape("data/map4/map2_shop_floor1.obj"); 
+      mapFloorModel.scale(mapScale); 
+      mapFloorModel.translate(0, 0, 0);
+
+      mapSkyModel = loadShape("data/map4/map2_shop_ciel.obj"); 
+      mapSkyModel.scale(mapScale);  
+      mapSkyModel.translate(0, 0, 0);
+    }
+    
+    thePlayer.cameraJump(-21073.932, -92.21912, -2480.2827); 
+    thePlayer.cameraAim(-19152.072, -91.83776, -1927.2524);
+
+    //set the current map name
+    println(this.mapName+" loaded");
+  }
+
   /////////////////////////////////////////////////////
   //Check if the camera is on the floor
   /////////////////////////////////////////////////////
@@ -120,171 +299,74 @@ class Map {
   }
 
 
+  /////////////////////////////VERTEX STUFF////////////////////////////////
 
-  /////////////////////////////////////////////////////////////////////
-  ///////////////////////////Shows the current map ///////////////
-  ////////////////////////////////////////////////////////////////////
-  void show() {
-    //display the current model
-    if (mapModel != null && !debug) {
-      shape(mapModel);
-    }
+  void glitchModel (PShape model) {
+    int totalFaces = model.getChildCount();
+    PVector direction = PVector.random3D();
+    direction.setMag(random(50, 6000));
 
-    //for floor model
-    if (mapFloorModel != null && !debug) {
-      shape(mapFloorModel);
-    }
+    //    if (millis() % int(random(1000, 7000)) < 30) {
+    //      println("glitch");
+    //      int areaToEffect = int(random(1, totalFaces));
+    //      int areaSize = 1;
+    //      for (int i = 0; i < areaSize; i++) {
+    //        int faceNumber = int(random(areaToEffect - areaSize, areaToEffect + areaSize));
+    //        hideVertex(constrain(faceNumber, 1, totalFaces-1), mapModel);
+    //      }
+    //    }
 
-    if (mapSkyModel != null && !debug) {
-      shape(mapSkyModel);
-    }
-
-    if (texts != null) {
-      for (lcdText t : texts) {
-        t.checkText();
+    if (millis() % int(random(300, 4000)) < 30) {
+      println("move");
+      int areaToEffect = int(random(1, totalFaces));
+      int areaSize = 500;
+      for (int i = 0; i < areaSize; i++) {
+        int faceNumber = int(random(areaToEffect - areaSize, areaToEffect + areaSize));
+        moveVertex(constrain(faceNumber, 1, totalFaces-1), mapModel, direction);
       }
     }
-    //    if (mapFloorModel != null)
-    //      showAverage();
-
-    if (tempeteActive && !debug) {
-      theWeather.display();
-    }
-    //    showFloorLevel(thePlayer.direction);
-
-    //    if (nextCheckedFace != null) {
-    //      drawFace(nextCheckedFace);
-    //    }
   }
 
-  void initGourdi() {
-
-    objective = "Où-est Sam?";
-
-    //initialize the shape and set it to the position and scale   
-    if (debug) {
-      //debug map
-      mapModel = loadShape("data/map3/map3.obj"); 
-      mapModel.scale(mapScale); 
-      mapModel.translate(0, -500, 0);
-    } else {
-      mapFloorModel = loadShape("data/map3/map3.obj"); 
-      mapFloorModel.scale(mapScale); 
-      mapFloorModel.translate(0, -500, 0);
+  //hide a vertex depending on his state
+  void hideVertex(int index, PShape theModel) {
+    //checking the state
+    if (theModel.getChild(index).getKind() != 0) {
+      //hiding
+      theModel.getChild(index).setKind(0);
+    } else { 
+      //un-hiding
+      theModel.getChild(index).setKind(TRIANGLE);
     }
-    thePlayer.cameraJump(1341.1835, -thePlayer.getHeight(), 2589.0117); 
-    thePlayer.cameraAim(2244.692, -thePlayer.getHeight(), 804.9005);
-    //set the current map name
-    mapText = loadStrings("map3/map3_text.txt");
-    println(this.mapName+" loaded");
+    //for some reason, if you don't "set" the vertex, nothing happens...
+    theModel.getChild(index).setVertex(1, theModel.getChild(index).getVertexX(1), theModel.getChild(index).getVertexY(1), theModel.getChild(index).getVertexZ(1));
   }
 
-  //////////////////////////PapiGARAGE/////////////////////////////
-  void initPapiGarage() {
-    floorCorners = new PVector [7]; 
-    //set up the floor as a collision object    
-    floorCorners[0] = new PVector (-3084.667, -thePlayer.getHeight(), -1021.6255); 
-    floorCorners[1] = new PVector (1722.3079, -850.00256, -806.89954); 
-    floorCorners[2] = new PVector (1684.7804, -850.00024, -2875.14); 
-    floorCorners[3] = new PVector (790.49896, -850.0002, -3563.4263); 
-    floorCorners[4] = new PVector (645.8008, -850.00037, -4738.9956); 
-    floorCorners[5] = new PVector (-2605.3396, -850.00037, -4892.056); 
-    floorCorners[6] = new PVector (-3084.667, -849.9998, -1021.6255); 
-
-    //function that compute where the collision shoud occur and the accuracy
-    computeCollisionVector(15); 
-
-    objective = "Explore the area";
-
-    thePlayer.cameraJump(-2399.593, -86.96228, 1492.4738); 
-    thePlayer.cameraAim(-2007.3064, -82.30486, 3453.619); 
-    //initialize the shape and set it to the position and scale   
-    if (debug) {
-      mapModel = loadShape("data/debug.obj");
-    } else {
-      mapModel = loadShape("data/map1/papieGarage31Good.obj");
-    }
-    mapModel.scale(mapScale);    
-    mapModel.translate(0, -25, 0);
-    //set the current map name
-    mapText = loadStrings("map1/map1_text.txt");
-    println(this.mapName+" loaded");
+  //make a vertex seeable
+  void showVertex(int index, PShape theModel) {
+    theModel.getChild(index).setKind(TRIANGLE); 
+    theModel.getChild(index).setVertex(1, theModel.getChild(index).getVertexX(1), theModel.getChild(index).getVertexY(1), theModel.getChild(index).getVertexZ(1));
   }
 
-  //////////////////////////PapiEXT/////////////////////////////
-  void initPapiExt() {
-    PVector tempeteOrigin = new PVector (947.44763, -850.71443, 4120.506); 
-    theWeather = new Weather(tempeteOrigin, 50000, 3000, "snow"); 
-    tempeteActive = true; 
+  //move a vertex
+  void moveVertex(int index, PShape theModel, PVector direction) {
+    theModel.getChild(index).setKind(TRIANGLE); 
 
-    objective = "Get into the workshop";
+    theModel.getChild(index).setVertex(0, 
+    theModel.getChild(index).getVertexX(0)+direction.x, 
+    theModel.getChild(index).getVertexY(0)+direction.y, 
+    theModel.getChild(index).getVertexZ(0)+direction.z);
 
+    theModel.getChild(index).setVertex(1, 
+    theModel.getChild(index).getVertexX(1)+direction.x, 
+    theModel.getChild(index).getVertexY(1)+direction.y, 
+    theModel.getChild(index).getVertexZ(1)+direction.z);
 
-    mapText = loadStrings("map2/map2_text.txt");
-
-    //initialize the shape and set it to the position and scale   
-    if (debug) {
-      //debug map
-      mapFloorModel = loadShape("data/map2/map2_shop_floor1.obj"); 
-      mapFloorModel.scale(mapScale); 
-      mapFloorModel.translate(0, 0, 0);
-    } else {
-      //map proprieties
-      mapModel = loadShape("data/map2/map2_shop.obj"); 
-      mapModel.scale(mapScale); 
-      mapModel.translate(0, 0, 0); 
-      println("map2 main loaded");
-
-      mapFloorModel = loadShape("data/map2/map2_shop_floor1.obj"); 
-      mapFloorModel.scale(mapScale); 
-      mapFloorModel.translate(0, 0, 0);
-      println("map2 floor loaded");
-
-      mapSkyModel = loadShape("data/map2/map2_shop_ciel.obj"); 
-      mapSkyModel.scale(mapScale);  
-      mapSkyModel.translate(0, 0, 0);
-      println("map2 sky loaded");
-    }
-    thePlayer.cameraJump(-15790.673, -94.43428, -2025.185); 
-    thePlayer.cameraAim(-13873.002, -95.42826, -1457.8029);
-    //set the current map name
-    println(this.mapName+" loaded");
+    theModel.getChild(index).setVertex(2, 
+    theModel.getChild(index).getVertexX(2)+direction.x, 
+    theModel.getChild(index).getVertexY(2)+direction.y, 
+    theModel.getChild(index).getVertexZ(2)+direction.z);
   }
 
-  //////////////////////////Le retour/////////////////////////////
-  void initPapiRetour() {
-    PVector tempeteOrigin = new PVector (947.44763, -850.71443, 4120.506); 
-    theWeather = new Weather(tempeteOrigin, 20000, 5000, "both"); 
-    tempeteActive = true; 
-
-
-    mapText = loadStrings("map4/map2_text.txt");
-
-    //initialize the shape and set it to the position and scale   
-    if (debug) {
-      //debug map
-      mapFloorModel = loadShape("data/map4/map2_shop_floor1.obj"); 
-      mapFloorModel.scale(mapScale); 
-      mapFloorModel.translate(0, 0, 0);
-    } else {
-      //map proprieties
-      mapModel = loadShape("data/map4/map4_shop.obj"); 
-      mapModel.scale(mapScale); 
-      mapModel.translate(0, 0, 0); 
-
-      mapFloorModel = loadShape("data/map4/map2_shop_floor1.obj"); 
-      mapFloorModel.scale(mapScale); 
-      mapFloorModel.translate(0, 0, 0);
-
-      mapSkyModel = loadShape("data/map4/map2_shop_ciel.obj"); 
-      mapSkyModel.scale(mapScale);  
-      mapSkyModel.translate(0, 0, 0);
-    }
-    thePlayer.cameraJump(-15790.673, -94.43428, -2025.185); 
-    thePlayer.cameraAim(-13873.002, -95.42826, -1457.8029);
-    //set the current map name
-    println(this.mapName+" loaded");
-  }
 
   //////////////////////////////UTILITY////////////////////////////////////
 
@@ -331,17 +413,17 @@ class Map {
             locationBased = false;
           }
           //fills a string with the text content
-          String[] theText = new String[20];
+          ArrayList<String> theText = new ArrayList<String>();
           boolean longText = false;
-          for (int j = 0; j < theText.length; j++) {
+          for (int j = 0; j < 20; j++) {
             int lineToAdd = i+2+j;
             if (textfile[lineToAdd].length() != 0) {
-              theText[j] = textfile[lineToAdd];
+              theText.add(textfile[lineToAdd]);
               if (j > 4) {
                 longText = true;
               }
             } else {
-              j = theText.length;
+              j = 20;
             }
           }
           //create a text 

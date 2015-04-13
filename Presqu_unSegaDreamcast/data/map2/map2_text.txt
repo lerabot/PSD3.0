@@ -27,12 +27,6 @@ remember this.
 Still messy inside,
 in a good way.
 
-#5 porte garage
-
-Still messy inside,
-in a good way.121212
-edddddddddddddddddd
-
 #6 porte garage 2
 595.8844, -92.01877, 2853.566
 I thought I saw
@@ -65,36 +59,60 @@ Can't find it.
 
 # voisin arriere
 1730.6615, -100.26539, 6762.0015
-qwe
-asd
-
-
+The fence splits 
+my grandpa land
+from this other guy
+place.
+His home is nowhere
+to be seen. My granddad
+isn't to talkative
+about that either. 
 
 # buggy
 3685.38, -88.02633, 4214.167
-
+My dad had one
+of these buggy they
+made with car engine.
+   
+They used to
+spend so much time building
+those with his brother
+and cousin. 
+   
+At some point, his
+sister and him crashed
+with the thing in the wood.
+    
+My granddad heard the
+sound and thought the
+worse.
+   
+That was their last buggy.
 
 
 
 
 # tarp
 3757.8213, -79.58872, 2506.943
-
+Probably another
+snowmobile or
+broken machine.
 
 
 
 
 # snowmobile
 3301.1768, -75.680084, 3155.2124
-
-
-
-
-
+Because you need
+30 year old
+snowmobiles around.
 
 # un peu loin
 3820.4937, -71.49163, -1175.1107
-
+Where's the old
+treehouse? I can
+see the forest, but
+not the treehouse.
 
 
 

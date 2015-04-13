@@ -12,9 +12,8 @@ void storm() {
 //  spotLight(255, 250, 250.0, PVcamPosition.x, PVcamPosition.y, PVcamPosition.z, PVcamTarget.x, PVcamTarget.y, PVcamTarget.z, 5, 5);
 //}
 
-float frontPlane() {
-  float[] att = explorerCam.attitude();
-  return att[0];
+float[] frontPlane() {
+  return explorerCam.attitude();
 }
 
 //just shows a green dot a specified location
@@ -61,6 +60,8 @@ void mouseClicked() {
   //  println("Feet "+thePlayer.getFeet());
   println("Position "+thePlayer.getPosition());
   println("Target "+thePlayer.getTarget());
+  PVector aimMagnitude = PVector.sub(thePlayer.getTarget(), thePlayer.getPosition());
+  println(aimMagnitude.mag());
   //  println("Distance "+PVector.dist(thePlayer.getPosition(), thePlayer.getTarget()));
 } 
 

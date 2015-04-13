@@ -43,6 +43,7 @@ class FogSystem {
         translate(p.getPosition().x, p.getPosition().y, p.getPosition().z);
         scale(p.getScale()*20);
         rotateY(p.getAngle());
+        
 
         image(fogImg, 0, 0);
 

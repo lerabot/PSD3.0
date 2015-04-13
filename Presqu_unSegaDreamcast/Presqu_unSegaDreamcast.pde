@@ -24,7 +24,7 @@ void setup() {
 
 //DRAW////////////////////////////////////////
 void draw() {
-  //  lights();
+
   background(150);
   time = millis();
   progression(); 

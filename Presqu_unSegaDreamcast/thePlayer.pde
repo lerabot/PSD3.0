@@ -122,7 +122,6 @@ class Player {
 
   //rotation around the Y axis, or panorama
   void turnAround() {
-
     //check the rotation Angle for a value change
     if (rotationAngle != 0) {
       //since the operation happens overtime, it check where the index for its current poisition
@@ -147,11 +146,20 @@ class Player {
     playerHeadMovement.add(tumbleValueX, tumbleValueY, 0);
     playerHeadMovement.mult(0.50);
     playerHeadMovement.limit(0.001);
-    playerCamera.tumble(playerHeadMovement.x, playerHeadMovement.y);
+    playerCamera.look(playerHeadMovement.x, playerHeadMovement.y);
   }
 
+  PVector getDestination(PVector objectPosition, float speed) {
+    PVector direction = PVector.sub(playerPosition, objectPosition);
+    direction.normalize();
+    direction.mult(-speed);
+    return direction;
+  }
 
-
+  void follow(PVector object, float speed) {
+    PVector destination = getDestination(object, speed);
+    trackCamera (destination.x, destination.z);
+  }
 
 
 
@@ -168,8 +176,16 @@ class Player {
     playerCamera.pan(angle);
   }
 
-  void tumbleCamera(float angle) {
-    playerCamera.tumble(angle, 0);
+  void trackCamera(float xPos, float yPos) {
+    playerCamera.track(xPos, yPos);
+  }
+
+  void lookCamera(float azimut, float elevation) {
+    playerCamera.look(azimut, elevation);
+  }
+
+  void dollyCamera(float speed) {
+    playerCamera.dolly(speed);
   }
 
 
