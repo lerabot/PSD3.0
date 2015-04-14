@@ -12,23 +12,24 @@ void setup() {
   size(1280, 720, P3D);
   //the text stuff
   theFont = loadFont("psdFont.vlw");
-
-
+  mapList = loadStrings("data/maps.txt");
+  lightFalloff(1, 0.0001, 0.0);
   //Camera///////////////////////////////////////////////////////////////
   explorerCam = new Camera (this, 0.85, 1.77, 100, 100000);
   thePlayer = new Player(explorerCam);
   //GUI///////////////////////////////////////////////////////////////
   theGUI = new GUI();
+  noCursor();
 }
 
 
 //DRAW////////////////////////////////////////
 void draw() {
-
   background(150);
   time = millis();
   progression(); 
   thePlayer.render();
+  noLights();
   theGUI.display();
 }
 
@@ -41,7 +42,7 @@ void progression() {
     thePlayer.getMap().show();
   } else {
     //shows the intro screen if no map is loaded
-    //theGUI.showIntroScreen();
+    theGUI.showIntroScreen();
   }
   captureFrame();
 }

@@ -33,7 +33,7 @@ PGraphics gameVisual;
 PImage loading;
 String currentMap;
 
-
+String[] mapList = new String[5];
 
 boolean keyReady;
 

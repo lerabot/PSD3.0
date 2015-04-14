@@ -29,19 +29,20 @@ class Map {
   boolean tempeteActive = false;
 
   String objective;
+  //maximum time in map before it teleports you away (IN SECONDS)
+  int maxTimeInMap;
 
   //METHODS
   //constructor
-  public Map (int mapScale, String mapName) {
+  public Map (String mapName, int mapIndex) {
     this.mapName = mapName;
-    this.mapScale = mapScale;
-    if (this.mapName == "Garage") initPapiGarage();
-    if (this.mapName == "Ext") initPapiExt();
-    if (this.mapName == "Retour") initPapiRetour();
-    if (this.mapName == "Gourdi") initGourdi();
+    if (mapName.equals("Garage")) initPapiGarage();
+    if (mapName.equals("Ext")) initPapiExt();
+    if (mapName.equals("Retour")) initPapiRetour();
+    if (mapName.equals("Gourdi")) initGourdi();
     createText(mapText);
     println("# of text: "+texts.size());
-    thePlayer.setMap(this);
+    thePlayer.setMap(this, mapIndex);
   }
 
 
@@ -49,6 +50,10 @@ class Map {
   ///////////////////////////Shows the current map ///////////////
   ////////////////////////////////////////////////////////////////////
   void show() {
+
+    if (mapName.equals("Gourdi")) {
+      flashLight();
+    }
 
     //display the current model
     if (mapModel != null && !debug) {
@@ -63,7 +68,7 @@ class Map {
     if (mapSkyModel != null && !debug) {
       shape(mapSkyModel);
     }
-
+    noLights();
     if (texts != null) {
       for (lcdText t : texts) {
         t.checkText();
@@ -76,11 +81,9 @@ class Map {
       theWeather.display();
     }
 
-    if (mapName == "Retour") {
+    if (mapName.equals("Retour")) {
       glitchModel(mapModel);
     }
-
-
 
 
     if (mapName == "Garage") {
@@ -93,9 +96,13 @@ class Map {
     //    }
   }
 
+
+  //////////////////////////GOURDI/////////////////////////////
   void initGourdi() {
 
     objective = "Où-est Sam?";
+    maxTimeInMap = 240;
+    mapScale = -1;
 
     //initialize the shape and set it to the position and scale   
     if (debug) {
@@ -117,20 +124,10 @@ class Map {
 
   //////////////////////////PapiGARAGE/////////////////////////////
   void initPapiGarage() {
-    floorCorners = new PVector [7]; 
-    //set up the floor as a collision object    
-    floorCorners[0] = new PVector (-3084.667, -thePlayer.getHeight(), -1021.6255); 
-    floorCorners[1] = new PVector (1722.3079, -850.00256, -806.89954); 
-    floorCorners[2] = new PVector (1684.7804, -850.00024, -2875.14); 
-    floorCorners[3] = new PVector (790.49896, -850.0002, -3563.4263); 
-    floorCorners[4] = new PVector (645.8008, -850.00037, -4738.9956); 
-    floorCorners[5] = new PVector (-2605.3396, -850.00037, -4892.056); 
-    floorCorners[6] = new PVector (-3084.667, -849.9998, -1021.6255); 
-
-    //function that compute where the collision shoud occur and the accuracy
-    computeCollisionVector(15); 
 
     objective = "Explore the area";
+    maxTimeInMap = 150;
+    mapScale = -30;
 
     thePlayer.cameraJump(-2399.593, -86.96228, 1492.4738); 
     thePlayer.cameraAim(-2007.3064, -82.30486, 3453.619); 
@@ -153,9 +150,11 @@ class Map {
     theWeather = new Weather(tempeteOrigin, 50000, 3000, "snow"); 
     tempeteActive = true; 
 
+    maxTimeInMap = 240;
     objective = "Get into the workshop";
 
     mapText = loadStrings("map2/map2_text.txt");
+    mapScale = -3;
 
     //initialize the shape and set it to the position and scale   
     if (debug) {
@@ -189,11 +188,13 @@ class Map {
   //////////////////////////Le retour/////////////////////////////
   void initPapiRetour() {
     PVector tempeteOrigin = new PVector (947.44763, -850.71443, 4120.506); 
-    theWeather = new Weather(tempeteOrigin, 20000, 5000, "both"); 
+    theWeather = new Weather(tempeteOrigin, 20000, 3000, "both"); 
     tempeteActive = true; 
 
+    maxTimeInMap = 240;
+    mapScale = -3;
 
-    mapText = loadStrings("map4/map2_text.txt");
+    mapText = loadStrings("map4/map4_text.txt");
 
     //initialize the shape and set it to the position and scale   
     if (debug) {
@@ -215,9 +216,10 @@ class Map {
       mapSkyModel.scale(mapScale);  
       mapSkyModel.translate(0, 0, 0);
     }
-    
+
     thePlayer.cameraJump(-21073.932, -92.21912, -2480.2827); 
     thePlayer.cameraAim(-19152.072, -91.83776, -1927.2524);
+
 
     //set the current map name
     println(this.mapName+" loaded");
@@ -316,7 +318,7 @@ class Map {
     //      }
     //    }
 
-    if (millis() % int(random(300, 4000)) < 30) {
+    if (millis() % int(random(1000, 5000)) < 30) {
       println("move");
       int areaToEffect = int(random(1, totalFaces));
       int areaSize = 500;
@@ -379,6 +381,10 @@ class Map {
     }
   }
 
+  int getMaxTimeInMap() {
+    return maxTimeInMap * 1000;
+  }
+
   String getObjective() {
     if (objective != null) {
       return objective;
@@ -409,7 +415,7 @@ class Map {
             locationBased = true;
           } else {
             //if there's less, this mean that the text isn't meant to be triggered by position
-            textPosition.set(0, -5000, 0);
+            textPosition.set(0, 5000, 0);
             locationBased = false;
           }
           //fills a string with the text content

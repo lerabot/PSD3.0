@@ -28,7 +28,7 @@ class lcdText {
   //
   int textDelay = 4500;
 
-  int linePosition;
+  int linePosition = 0;
 
 
   lcdText(PVector textPosition, int lineNum, String name, ArrayList<String> theText, boolean locationBased) {
@@ -75,7 +75,7 @@ class lcdText {
       theGUI.cleanText();
       //does a check if it's a long text to write the other parts
       if (theGUI.getCurrentText().longText && !beenRead) {
-        theGUI.getCurrentText().writeNextText();
+        theGUI.getCurrentText().writeText();
       } else {
         //reset the textState to empty (flase)
         theGUI.setTextState(false, this);
@@ -94,25 +94,30 @@ class lcdText {
 
   void writeText() {
     int position = 0;
-    int lineLeft = 0;
-    if (linePosition >= 4) {
-      theGUI.cleanText();
-      writeNextText();
-    } else {
-      for (int i = 0; i < 4; i++) {
-        if (i < theText.size()) {  
-          if (theText.get(i) != null) {
-            theGUI.writeText(theText.get(i), position);              
-            position++;
-          }
+    //    if (beenRead && linePosition != 0)
+    //      beenRead = false;
+    //    if (linePosition >= 4) {
+    //      theGUI.cleanText();
+    //      writeNextText();
+    //    } else {
+    for (int i = linePosition; i < linePosition + 4; i++) {
+      if (i < theText.size()) {  
+        if (theText.get(i) != null) {
+          theGUI.writeText(theText.get(i), position);              
+          position++;
         }
-        linePosition = position;
-      } 
-      if (theText.size() < 4)
+      } else {
         beenRead = true;
-      theGUI.setTextState(true, this);
+      }
     }
+    if (beenRead) {
+      linePosition = 0;
+    } else {
+      linePosition += 4;
+    } 
+    theGUI.setTextState(true, this);
   }
+
 
   void writeNextText() {
     int position = 0;
@@ -124,6 +129,7 @@ class lcdText {
         }
       } else {
         beenRead = true;
+        linePosition = 0;
       }
     }
     linePosition += 4;

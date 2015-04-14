@@ -34,9 +34,9 @@ class FogSystem {
   }
 
   void display() {
-
     if (totalParticules != 0) {
       for (int i = fogElements.size ()-1; i >= 0; i--) {
+
         Particules p = fogElements.get(i);
         p.updateLocation();
         pushMatrix();
@@ -44,7 +44,6 @@ class FogSystem {
         scale(p.getScale()*20);
         rotateY(p.getAngle());
         
-
         image(fogImg, 0, 0);
 
         popMatrix();

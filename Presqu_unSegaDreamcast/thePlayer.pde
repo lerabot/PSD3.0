@@ -8,9 +8,14 @@ Player thePlayer;
 class Player {
   //hold the camera position and target
   Camera playerCamera;
+  //All the map info - The actual Map, if the player is in a map, 
+  //the time he's entered the map, and what level he's in
   Map activeMap;
   boolean inMap;
   int inMapSince;
+  int currentMapIndex;
+
+
   PVector playerPosition;
   PVector playerTarget;
   PVector playerHeadMovement;
@@ -52,6 +57,7 @@ class Player {
     playerTarget.set(cam.target());
     canMove = true;
     canRotate = true;
+
     cameraAim(0, 0, -1000);
   }
 
@@ -60,10 +66,22 @@ class Player {
     if (activeMap != null) {
       headMotion();
       updatePosition();
+      changeMap();
     }
     updateCameraData();
     playerCamera.feed();
   }
+
+
+  void changeMap() {
+    if (activeMap.getMaxTimeInMap() + inMapSince < millis()) {
+      currentMapIndex++;
+      println("Next map is : "+mapList[currentMapIndex]);
+//      theGUI.writeText(" Loading next map", 1);
+      thePlayer.activeMap = new Map(mapList[currentMapIndex], currentMapIndex);
+    }
+  }
+
 
   //makes sure all the camera info is up to date
   void updateCameraData() {  
@@ -78,6 +96,7 @@ class Player {
     if (canRotate) 
       turnAround();
   }
+
 
   //  PVector getDestination(int direction) {
   //    PVector destination = PVector.add(playerLerp(0.5), activeMap.getFloorLevel(direction));
@@ -161,8 +180,6 @@ class Player {
     trackCamera (destination.x, destination.z);
   }
 
-
-
   //teleports the player to said location
   void cameraJump(float x, float y, float z) {
     playerCamera.jump(x, y, z);
@@ -188,10 +205,7 @@ class Player {
     playerCamera.dolly(speed);
   }
 
-
-
-
-  //ACCESSORS AND OTHER SHORT FUNCTIONS////////////////////////////////////////////////
+  //ACCESSORS AND OTHER SHORT FUNCTIONS////////////////////
   PVector getPosition() {
     return playerPosition;
   }
@@ -224,13 +238,18 @@ class Player {
     return getDirection().heading();
   }
 
-  void setMap(Map theMap) {
+  void setMap(Map theMap, int mapIndex) {
+    currentMapIndex = mapIndex;
     activeMap = theMap;
     inMapSince = millis();
-  } 
+  }
 
   int getInMapSince() {
     return millis() - inMapSince;
+  }
+
+  void setInMapSince(int time) {
+    inMapSince = time;
   }
 
   Map getMap() {
@@ -242,6 +261,13 @@ class Player {
     playerTarget.normalize();
     playerTarget.setMag(1000);
     return PVector.lerp(thePlayer.getPosition(), thePlayer.getTarget(), lerpDist);
+  }
+
+  PVector playerLerpNormalize() {
+    //normalize and set the scale to 1000, so you get info from 0 to 1000 pixel
+    PVector normalizedLerp = PVector.lerp(thePlayer.getPosition(), thePlayer.getTarget(), 1);
+    normalizedLerp.normalize();
+    return normalizedLerp;
   }
 
   PVector playerDirection(int walkDir) {

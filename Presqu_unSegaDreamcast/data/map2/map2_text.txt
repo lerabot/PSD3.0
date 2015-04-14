@@ -22,11 +22,6 @@ This was built
 recently. I don't 
 remember this.
 
-#5 porte garage
-
-Still messy inside,
-in a good way.
-
 #6 porte garage 2
 595.8844, -92.01877, 2853.566
 I thought I saw
@@ -41,14 +36,14 @@ goes by the side
 door.
 
 #7 porte coté
-557.83984, -91.78903, 4811.422
+368.17206, -70.82079, 4907.633
 Ah! It's locked.
 He usually has
 a key around.
 Where is it?
 
 #8 clef
-599.6902, -88.89831, 5323.166
+372.40503, -73.28179, 5183.661
 The key's supposed
 to be up here,
 somewhere
@@ -77,20 +72,14 @@ made with car engine.
 They used to
 spend so much time building
 those with his brother
-and cousin. 
-   
+and cousin.  
 At some point, his
 sister and him crashed
 with the thing in the wood.
     
 My granddad heard the
-sound and thought the
-worse.
-   
-That was their last buggy.
-
-
-
+sound and ran to see what happened.
+It wasn't to bad in the end.
 
 # tarp
 3757.8213, -79.58872, 2506.943
@@ -98,14 +87,11 @@ Probably another
 snowmobile or
 broken machine.
 
-
-
-
 # snowmobile
 3301.1768, -75.680084, 3155.2124
 Because you need
 30 year old
-snowmobiles around.
+snowmobiles laying around.
 
 # un peu loin
 3820.4937, -71.49163, -1175.1107

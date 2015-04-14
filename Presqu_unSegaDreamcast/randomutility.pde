@@ -8,9 +8,15 @@ void storm() {
   }
 }
 
-//void flashLight() {
-//  spotLight(255, 250, 250.0, PVcamPosition.x, PVcamPosition.y, PVcamPosition.z, PVcamTarget.x, PVcamTarget.y, PVcamTarget.z, 5, 5);
-//}
+void flashLight() {
+  PVector lightDirection = PVector.sub(thePlayer.getPosition(), thePlayer.getTarget());
+  lightDirection.mult(-1);
+  lightDirection.normalize();
+  spotLight(100, 100, 100, 
+            thePlayer.getPosition().x, thePlayer.getPosition().y, thePlayer.getPosition().z, 
+            lightDirection.x, lightDirection.y, lightDirection.z, 
+            radians(30), 5);
+}
 
 float[] frontPlane() {
   return explorerCam.attitude();
@@ -60,8 +66,6 @@ void mouseClicked() {
   //  println("Feet "+thePlayer.getFeet());
   println("Position "+thePlayer.getPosition());
   println("Target "+thePlayer.getTarget());
-  PVector aimMagnitude = PVector.sub(thePlayer.getTarget(), thePlayer.getPosition());
-  println(aimMagnitude.mag());
   //  println("Distance "+PVector.dist(thePlayer.getPosition(), thePlayer.getTarget()));
 } 
 

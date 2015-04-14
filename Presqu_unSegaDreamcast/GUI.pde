@@ -34,8 +34,8 @@ class GUI {//graphical user interface (CURRENTLY IN TESTING)
     menuBox = new GUImenu(0, 250, 400, 80);
     menuBox.setMenu("main");
     splash = loadImage("splash.png");
-    //introScreen = loadShape("intro/inside_lowres.obj");
-    //introScreen.scale(-1);
+    introScreen = loadShape("intro/inside_lowres.obj");
+    introScreen.scale(-1);
     GUIrender = createGraphics (GUIwidth, GUIheight);
   }
 

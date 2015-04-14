@@ -75,28 +75,13 @@ class GUImenu extends GUItext {
     objectRender.text("     Retour", xTextMargin, yOffset+(yTextMargin*3));
     objectRender.text("->", xTextMargin, yOffset+(yTextMargin*menuSelection));
     objectRender.endDraw();
-    //garage
-    if (menuSelection == 0 && key == 'd' && keyReady) {
-      clean();
-      thePlayer.activeMap = new Map(-30, "Garage");
-      activeMenu = null;
-    }
-    //ext
-    if (menuSelection == 1 && key == 'd' && keyReady) {
-      clean();
-      thePlayer.activeMap = new Map(-3, "Ext");
-      activeMenu = null;
-    }
-    //gourdi
-    if (menuSelection == 2 && key == 'd' && keyReady) {
-      clean();
-      thePlayer.activeMap = new Map(-1, "Gourdi");
-      activeMenu = null;
-    }
-    if (menuSelection == 3 && key == 'd' && keyReady) {
-      clean();
-      thePlayer.activeMap = new Map(-3, "Retour");
-      activeMenu = null;
+
+    for (int i = 0; i < 4; i++) {
+      if (menuSelection == i && key == 'd' && keyReady) {
+        clean();
+        thePlayer.activeMap = new Map(mapList[i], i);
+        activeMenu = null;
+      }
     }
 
     keyReady = false;
