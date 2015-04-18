@@ -2,16 +2,21 @@ GUI theGUI;
 
 class GUI {//graphical user interface (CURRENTLY IN TESTING)
 
+  //flag to show or not the GUI on screen
   boolean showGUI = true;
-  color bgColor = color(200);
-  int GUIwidth = width; 
-  int GUIheight = height; 
+  //size of the GUI
+  final int GUI_WIDTH = width; 
+  final int GUI_HEIGHT = height; 
 
+  //this is the logo of the game
   PImage splash;
+  //the 3d models for the intro screen
   PShape introScreen;
 
+  //this is the pGraphics that holds all the GUI visual
   PGraphics GUIrender;
 
+  //list of GUI object to be displayed by the GUI
   GUItext dialogBox;
   GUImenu menuBox;
   GUItext smallBox;
@@ -25,21 +30,44 @@ class GUI {//graphical user interface (CURRENTLY IN TESTING)
   //the name (ID) of the currenct text displayed
   String currentTextName;
 
+  //a reference to the last displayed lcdText object
   lcdText currentText;
 
   GUI() {
+    //adds different GUI object over the screen
     dialogBox = new GUItext(0, 250, 400, 80);
-    //smallBox = new GUItext(-GUIwidth/2 + 70, -GUIheight/2 + 45, 128, 80, "textboxM.png");
-    smallBox = new GUItext(-GUIwidth/2 + 130, -GUIheight/2 + 45, 253, 80, "textTRANS.png");
     menuBox = new GUImenu(0, 250, 400, 80);
+    //sets the current menu to the "main" menu
     menuBox.setMenu("main");
+    smallBox = new GUItext(-GUI_WIDTH/2, -GUI_HEIGHT/2, 253, 80, "textTRANS.png");
+    //loads the slash Screen image
     splash = loadImage("splash.png");
+    //loads the intro 3d model and scales it
     introScreen = loadShape("intro/inside_lowres.obj");
     introScreen.scale(-1);
-    GUIrender = createGraphics (GUIwidth, GUIheight);
+    //create the PGraphics where everything is going to be drawn.
+    GUIrender = createGraphics (GUI_WIDTH, GUI_HEIGHT);
+  }
+
+  GUI(GameController controller) {
+    //adds different GUI object over the screen
+    dialogBox = new GUItext(0, 250, 400, 80);
+    menuBox = new GUImenu(0, 250, 400, 80, controller);
+    //sets the current menu to the "main" menu
+    menuBox.setMenu("main");
+    smallBox = new GUItext(-GUI_WIDTH/2, -GUI_HEIGHT/2, 253, 80, "textTRANS.png");
+    //loads the slash Screen image
+    splash = loadImage("splash.png");
+    //loads the intro 3d model and scales it
+    introScreen = loadShape("intro/inside_lowres.obj");
+    introScreen.scale(-1);
+    //create the PGraphics where everything is going to be drawn.
+    GUIrender = createGraphics (GUI_WIDTH, GUI_HEIGHT);
   }
 
   void display() {
+    //shuts the lights if there's light, so the 2D elements are not affected by it.
+    noLights();
     //you can use this to turn off the GUI for screenshots or test 
     if (showGUI) {
       pushMatrix();
@@ -52,7 +80,7 @@ class GUI {//graphical user interface (CURRENTLY IN TESTING)
       rotateZ(frontPlane()[2]);
       rotateX(-frontPlane()[1]);
       scale(0.25);
-      //main GUI function
+      //main GUI drawing function
       drawGUIobjects();
       popMatrix();
     }
@@ -60,13 +88,17 @@ class GUI {//graphical user interface (CURRENTLY IN TESTING)
 
   //this function holds all the GUI objects and thier logic
   void drawGUIobjects() {
-    showInfo();
+    //updates the small info box top left
+    updatesInfoBox();
+    //check which menu is active
     checkMenu();
+    //is there's no active menu, draws the GUI elements
     if (activeMenu() != null) {
       image(menuBox.drawObject(), menuBox.getPosition().x, menuBox.getPosition().y);
     } else {
-      image(smallBox.drawObject(), smallBox.getPosition().x, smallBox.getPosition().y);
       image(dialogBox.drawObject(), dialogBox.getPosition().x, dialogBox.getPosition().y);
+      imageMode(CORNER);
+      image(smallBox.drawObject(), smallBox.getPosition().x, smallBox.getPosition().y);
     }
   }
 
@@ -75,12 +107,16 @@ class GUI {//graphical user interface (CURRENTLY IN TESTING)
     dialogBox.clean();
   }
 
-  void showInfo() {
+  //updates the info box with player position and other infos
+  void updatesInfoBox() {
     if (thePlayer.activeMap != null) {
       if (frameCount % 5 == 0) { 
         smallBox.clean();
+        //writes the current map name
         smallBox.writeText(thePlayer.activeMap.getMapName(), 0);
+        //write the player position
         smallBox.writeText(thePlayer.getPosition(), 1);
+        //writes the maps objective
         smallBox.writeText(thePlayer.activeMap.getObjective(), 2);
       }
     }
@@ -116,26 +152,24 @@ class GUI {//graphical user interface (CURRENTLY IN TESTING)
     menuBox.setMenu(menuStatus);
   }
 
+  //keeps track of if the GUI is displaying text, and which one
   void setTextState(boolean state, lcdText thisText) {
     isDisplayingText = state;
     lastTextTime = millis();
     currentText = thisText;
   }
 
-  void setTextState(boolean state) {
-    isDisplayingText = state;
-    lastTextTime = millis();
-  }
-
+  //return the last text object displayed
   lcdText getCurrentText() {
     return currentText;
   }
 
+  //returns the current state of the GUI, if it's displayng text of nor
   boolean isDisplayingText() {
     return isDisplayingText;
   }
 
-
+  //keeps tracks of the last time a text has been displayed
   int noTextSince() {
     return millis() - lastTextTime ;
   }
@@ -146,12 +180,17 @@ class GUI {//graphical user interface (CURRENTLY IN TESTING)
   //    image(splash, 0, -50);
   //  }
 
-
+  //I don't know if this is really a GUI thing, but shows the 3D model of the intro screen
   void showIntroScreen() {
     lights();
-    rotAngle =+ 0.001;
+    rotAngle =+ 0.01;
     thePlayer.rotateCamera(radians(10)*sin(rotAngle));
     shape(introScreen);
+  }
+
+  //check for controller changes and calls every GUI object which use them
+  void checkController() {
+    menuBox.checkController();
   }
 
   //well... keypresses...  

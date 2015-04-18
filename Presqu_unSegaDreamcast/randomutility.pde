@@ -8,14 +8,26 @@ void storm() {
   }
 }
 
+
+void addController() {
+  if (Serial.list().length > 0) {
+    serialPort = new Serial(this, Serial.list()[0], 112500);
+    manette = new GameController(serialPort, true);
+    println("Manette Ready");
+  } else {
+    manette = new GameController(null, false);
+    println("No Manette");
+  }
+}
+
 void flashLight() {
   PVector lightDirection = PVector.sub(thePlayer.getPosition(), thePlayer.getTarget());
   lightDirection.mult(-1);
   lightDirection.normalize();
   spotLight(100, 100, 100, 
-            thePlayer.getPosition().x, thePlayer.getPosition().y, thePlayer.getPosition().z, 
-            lightDirection.x, lightDirection.y, lightDirection.z, 
-            radians(30), 5);
+  thePlayer.getPosition().x, thePlayer.getPosition().y, thePlayer.getPosition().z, 
+  lightDirection.x, lightDirection.y, lightDirection.z, 
+  radians(30), 5);
 }
 
 float[] frontPlane() {

@@ -81,7 +81,7 @@ class Map {
       theWeather.display();
     }
 
-    if (mapName.equals("Retour")) {
+    if (mapName.equals("Retour") && mapModel != null) {
       glitchModel(mapModel);
     }
 

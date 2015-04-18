@@ -18,22 +18,23 @@ Camera explorerCam;
 //is the game saving frames atm
 boolean captureOn = false;
 
-//PROGRESSION FLAG////////
-boolean introDone = false;
-
 //TEXT INFO//////////////////////////
 PFont myFont;
 
 
 //VISUAL STUFF///////////////////////////
-PFont theFont;
+static final int GAME_WIDTH = 1280;
+static final int GAME_HEIGHT = 720;
 
-
-PGraphics gameVisual;
-PImage loading;
+//Map stuff//////
+//return a String ta hold the current map the player is in
 String currentMap;
-
+//holds the map names
 String[] mapList = new String[5];
 
 boolean keyReady;
 
+GameController manette;
+
+//simple flag to get faster loading if I don't need all the models
+boolean debug = false;

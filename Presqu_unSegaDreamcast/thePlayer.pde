@@ -57,7 +57,6 @@ class Player {
     playerTarget.set(cam.target());
     canMove = true;
     canRotate = true;
-
     cameraAim(0, 0, -1000);
   }
 
@@ -74,11 +73,28 @@ class Player {
 
 
   void changeMap() {
+
+
+
+    //void loadMap(String mapName, int mapNumber, int frameToChange) {   
+    //      theGUI.writeText("LOADING", 1);
+    //      if (frameCount == frameToChange) 
+    //        thePlayer.activeMap = new Map(mapName, mapNumber);
+    //    }
+
+
+    //This is for automatic map changes
     if (activeMap.getMaxTimeInMap() + inMapSince < millis()) {
       currentMapIndex++;
-      println("Next map is : "+mapList[currentMapIndex]);
-//      theGUI.writeText(" Loading next map", 1);
-      thePlayer.activeMap = new Map(mapList[currentMapIndex], currentMapIndex);
+      if (mapList[currentMapIndex].length() > 0) {
+        //      theGUI.writeText(" Loading next map", 1);
+        println("Next map is : "+mapList[currentMapIndex]);
+        thePlayer.activeMap = new Map(mapList[currentMapIndex], currentMapIndex);
+      } else {
+        theGUI.setMenu("main");
+        resetPosition();
+        thePlayer.activeMap = null;
+      }
     }
   }
 
@@ -97,15 +113,22 @@ class Player {
       turnAround();
   }
 
+  void resetPosition() {
+    cameraJump(0.0, 0.0, 795.4339);
+    cameraAim(100.21747, -7.848091E-5, -997.20087);
+  }
 
-  //  PVector getDestination(int direction) {
-  //    PVector destination = PVector.add(playerLerp(0.5), activeMap.getFloorLevel(direction));
-  //    return destination;
-  //  }
-
-  //  void showDestination() {
-  //   showTarget(getDestination());
-  //  }
+  void checkController() {
+    if (manette != null) {
+      if (manette.boutonC() && manette.hasNewData()) {
+        theGUI.showGUI = !theGUI.showGUI;
+      }
+      if (manette.boutonLeft()) rotationAngle = - 0.35;
+      if (manette.boutonRight()) rotationAngle = + 0.35;
+      if (manette.boutonUp()) direction = -1;           
+      if (manette.boutonDown()) direction = 1;
+    }
+  }
 
   //using the W A S D pattern to move the camera around
   void keyPressed() {
@@ -236,6 +259,11 @@ class Player {
 
   float getAngle() {
     return getDirection().heading();
+  }
+
+  void setMobility(boolean state) {
+    canRotate = state;
+    canMove = state;
   }
 
   void setMap(Map theMap, int mapIndex) {
