@@ -4,20 +4,19 @@
 
 class Map {
   //ATTRIBUTES
+  //the map model scale factor
   int mapScale;
   //the map name
   String mapName;
-  //setting the model name
+  //holds the different model that compose each map
   PShape mapModel;
   PShape mapFloorModel;
   PShape mapSkyModel;
 
+  //mostly used for collision detection, which is currently on hold
   PShape lastCheckedFace;
   PShape nextCheckedFace;
-
-  //all the stuff related to the floor and collison detection
-  PVector[] floorCorners;
-  PVector[] floorCollision = new PVector [1];
+  
   //a counter increase
   int collisionOffset = 0;
   int collisionVectorIndex = 0;
@@ -187,7 +186,7 @@ class Map {
 
   //////////////////////////Le retour/////////////////////////////
   void initPapiRetour() {
-    PVector tempeteOrigin = new PVector (947.44763, -850.71443, 4120.506); 
+    PVector tempeteOrigin = new PVector (-16970.201, -91.05798, -1821.0582); 
     theWeather = new Weather(tempeteOrigin, 20000, 3000, "both"); 
     tempeteActive = true; 
 
@@ -439,42 +438,15 @@ class Map {
     }
   }
 
+//shows a visual representation of the middle of a face
   void showAverage() {
+    //iterate the loop for every face of the mapFloormodel
     for (int i = 0; i < mapFloorModel.getChildCount (); i++) {
+      //get a shape a current index
       PShape child = mapFloorModel.getChild(i);
-      if (i % 3 == 0) 
+      //uses the ShowTarget function to display a shpere 
         showTarget(currentShapePosition(child).x, currentShapePosition(child).y, currentShapePosition(child).z);
     }
-  }
-
-
-  //create collision vectors if it has a floor
-  void computeCollisionVector(int precision) {
-    //checks if said map has a floor
-    if (mapFloorModel != null) {
-      //calculate the number of collision vertex to be created in relation ship to the number of borders and precision
-      collisionVectorIndex = precision * (floorCorners.length-1); 
-      floorCollision = new PVector [collisionVectorIndex]; 
-      //goes through all the edges of the floor
-      for (int i = 0; i < floorCorners.length-1; i++) {
-        //sets an origin
-        PVector current = new PVector (0, 0, 0); 
-        //and a destination
-        PVector target = new PVector (0, 0, 0); 
-        // assigns a floor corner to the origin     
-        current.set(floorCorners[i]); 
-        // and assign a nother floor corner to the destination
-        target.set(floorCorners[i+1]); 
-
-        //goes from the origin to the destination and devides the vertex lenght byt the precision amount
-        for (int j = 0; j < precision; j++) {
-          floorCollision[j+collisionOffset] = PVector.lerp(current, target, j*0.1);
-        }    
-        //continues to index the floorCollisions even if there's a new line
-        collisionOffset = collisionOffset + precision;
-      }
-    }    
-    println(mapName + collisionVectorIndex);
   }
 
   //  //a boolean funtion to check the collision

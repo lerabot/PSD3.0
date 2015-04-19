@@ -25,9 +25,9 @@ class lcdText {
   boolean longText = false;
   //has the text arealy been read
   boolean beenRead = false;
-  //
-  int textDelay = 4500;
-
+  //delay between each text
+  int textDelay = 6500;
+ //which line of thext is currently displayed
   int linePosition = 0;
 
 
@@ -45,7 +45,7 @@ class lcdText {
     isLocationBased = locationBased;
     this.longText = longText;
     if (longText)
-      println(name +"is a longtext");
+      println(name +" is a longtext");
   }
 
   /////////////////////////////////////////////////////
@@ -68,7 +68,7 @@ class lcdText {
 
 
     //if there's an active text on the screen after the text display time
-    if (theGUI.isDisplayingText && theGUI.noTextSince() > 3500) { 
+    if (theGUI.isDisplayingText && theGUI.noTextSince() > textDelay) { 
       //puts the ball in it's original color;
       theGUI.getCurrentText().ballColor = color(0, 20, 180);
       //clean the text box
@@ -93,71 +93,66 @@ class lcdText {
 
 
   void writeText() {
+    //reset the postition where the text is going to be written in the GUI
     int position = 0;
-    //    if (beenRead && linePosition != 0)
-    //      beenRead = false;
-    //    if (linePosition >= 4) {
-    //      theGUI.cleanText();
-    //      writeNextText();
-    //    } else {
+    //iterate through 4 line of the text
     for (int i = linePosition; i < linePosition + 4; i++) {
+      //only get the next line if the index i smaller than the text size
       if (i < theText.size()) {  
+        //only write if there's something in the string
         if (theText.get(i) != null) {
-          theGUI.writeText(theText.get(i), position);              
+          //writes a single line at the "position" 
+          theGUI.writeText(theText.get(i), position);
+//augment the pausition index          
           position++;
         }
+      //if the index is larger than the text size, flag the text as read.
       } else {
         beenRead = true;
       }
     }
+    //if the text has been read, reset the line to be written to 0
     if (beenRead) {
       linePosition = 0;
     } else {
+      //otherwise, add 4.
       linePosition += 4;
     } 
+    //sets the last displayed text to this text, and state that this is currently displayed.
     theGUI.setTextState(true, this);
   }
 
-
-  void writeNextText() {
-    int position = 0;
-    for (int i = linePosition; i < linePosition+4; i++) { 
-      if (i < theText.size()) {   
-        if (theText.get(i) != null) {
-          theGUI.writeText(theText.get(i), position);              
-          position++;
-        }
-      } else {
-        beenRead = true;
-        linePosition = 0;
-      }
-    }
-    linePosition += 4;
-    theGUI.setTextState(true, this);
-  }
-
+  //a little feature that visually respresent where the taxt are
   void textDebug() {
-    //(debug) {
+    if (debug) {
     pushMatrix();
+    //transalte the origin to the text location
     translate(textPosition.x, textPosition.y, textPosition.z);
+    //rotates the sketch so that everything is facing the camera, good for 2D elements
     rotateY(frontPlane()[0]);
     //      text(name, 0, -20, 0);
+    //changes the style of the model
     noStroke();    
     fill(ballColor);
     sphereDetail(4);
+    //draws the elements
     sphere(25);
     popMatrix();
-    // }
+    }
   }
 
+  /////////////////////////////////////////////////////////
+  //ACCESSOR
+  /////////////////////////////////////////////////////////
   PVector textReach() {
     return PVector.lerp(thePlayer.getPosition(), thePlayer.getTarget(), reachDist);
   }
 }
 
+
 //////////////////////////LCD UTILITY/////////////////////////////////////////////
-
-
+//MOSTLY OUTDATED, USED FOR THE OLD LCD SCREEN, KEPPING THIS FOR FUTURE UPDATES
+//////////////////////////////////////////////////////////////////////////////////
 
 //write the string to the LCD at the set LINE position
 void wLCD(String writtenText, int location) {

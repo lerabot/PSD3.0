@@ -1,43 +1,82 @@
+//This classes handles the custom made controller
+//it automatly check the serial port for new commands
 class GameController {
-
+  //returns if the controller is connected or not
   boolean isActive;
+  //keeps track of if new data is sent on said frame
   boolean newData;
 
+  //keeps the state of each button
   boolean aState;
   boolean bState;
   boolean cState;
   boolean startState;
 
+  //a reference of the serial port
   Serial serialPort;
+  //this is what is sent through the serial port
   String serialBuffer;
+  //this is the last string of sent data
   String serialData;
 
+  //currently testing a bounce feature, this is the delay
+  int bounceDelay = 100;
+  //keeps track of the last time the data has changes
+  int lastDataChange;
+ 
+  boolean controllerReady;
+
   GameController(Serial port, boolean state) {
+    //set the port to the one passed in the arguments
     serialPort = port;
+    //sets the active varible
     isActive = state;
   }
 
+  //handles the data coming in the serail port
   void updateControllerData() {
+    //only works if the Controller is set to active
     if (isActive) {
+      //reads the serial port until a "line feed" appears
       serialBuffer = serialPort.readStringUntil(10);
-      if (serialBuffer != null && serialBuffer != serialData) {
+      //check if the bounce time is right and if new data is sent though the port
+      if (lastDataChange < millis() + bounceDelay && serialBuffer != null && serialBuffer != serialData) {
         newData = true;
+        //copy what's in the buffer into the Data string
         serialData = serialBuffer;
+        //keeps track of the time when the data was sent in
+        lastDataChange = millis();
+        //for debug prupose, sends the serialData in the port
         print  (serialData);
       } else {
+        //if no data is sent, makes sure that the NewData variable is false
         newData = false;
       }
     }
   }
 
+  /////////////////////////////////////
+  //BUTTONS
+  //all these basicly return a boolean depending on the state 
+  //of all the numbers is the String received.
+  //each number is a ON/OFF states
+  //////////////////////////////////////
   boolean boutonA() {
+    //checks if there's data in the serialData string
     if (serialData != null) {
+      //check for a particuliar number, and if the last State of this button was false
       if (serialData.charAt(2) == '0' && aState == false) {
+        //sets the state of said button to true
         aState = true;
+        //since a button has been pressed, the controller can't receive the new data
+        controllerReady = false;
         return true;
       }
     }
+    //if this button isn't prssed, reset the button state to false
     aState = false;
+    //and the controller is ready to receive new data again
+    controllerReady = true;
     return false;
   }
 
@@ -94,7 +133,7 @@ class GameController {
     }
     return false;
   }
-  
+
   boolean boutonStart() {
     if (serialData != null) {
       if (serialData.charAt(3) == '0' && startState == false) {
@@ -106,6 +145,9 @@ class GameController {
     return false;
   }
 
+  //////////////////////////////////////////
+  //ACCESSORS
+  /////////////////////////////////////////
   boolean hasNewData() {
     return newData;
   }
@@ -120,6 +162,14 @@ class GameController {
 
   boolean getC_State() {
     return cState;
+  }
+
+  void setControllerReady(boolean state) {
+    controllerReady = state;
+  }
+
+  boolean isReady() {
+    return controllerReady;
   }
 }
 

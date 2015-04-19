@@ -3,19 +3,21 @@
 //////////////////////////////////////////////////
 
 //TIME BASED STUFF///////////////////
+//keeps track of the time
 int time;
-int lastTime;
+
 
 //SERIAL///////////////////
+//imports the Serail library and keeps the instance of the serial data
 import processing.serial.*;
 Serial serialPort;
-String serialData;
 
 //CAMERA///////////////////
+//special library to facilitate the use of camera in processing
 import damkjer.ocd.*;
 Camera explorerCam;
 
-//is the game saving frames atm
+//set the frame capture mode on or off
 boolean captureOn = false;
 
 //TEXT INFO//////////////////////////
@@ -32,8 +34,10 @@ String currentMap;
 //holds the map names
 String[] mapList = new String[5];
 
+//keeps track of if a key has been pressed but not released
 boolean keyReady;
 
+//an instance of the gameController object, which handle the custom made 
 GameController manette;
 
 //simple flag to get faster loading if I don't need all the models

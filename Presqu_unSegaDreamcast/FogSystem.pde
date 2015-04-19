@@ -17,7 +17,6 @@ class FogSystem {
   final int FOG_SCALE = 20;
 
   FogSystem (PVector position, int size) {
-
     totalParticules = 25;
     //position to draw the system
     this.position = new PVector (0, 0, 0);
@@ -31,7 +30,7 @@ class FogSystem {
     //populates them using the maxium number of particule
     for (int i = 0; i < totalParticules; i++) {
       //adds fog element, they are randomly positioned where the PVector position is, in the area designed
-      fogElements.add(new Particules(random(position.x-areaSize, position.x+areaSize), random(-200, 300), random(position.z-areaSize, position.z+areaSize), fogWind));
+      fogElements.add(new Particules(random(position.x-areaSize, position.x+areaSize), random(-500), random(position.z-areaSize, position.z+areaSize), fogWind));
     }
   }
 
@@ -49,6 +48,7 @@ class FogSystem {
         translate(p.getPosition().x, p.getPosition().y, p.getPosition().z);
         //scales the fog image by the fog scale factor
         scale(p.getScale()*FOG_SCALE);
+        imageMode(CENTER);
         //also rotates the drawing so not every fog element is aligned
         rotateY(p.getAngle());
         //actually draws the image

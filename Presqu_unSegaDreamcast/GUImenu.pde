@@ -122,23 +122,30 @@ class GUImenu extends GUItext {
     keyReady = false;
   }
 
+  //accessor for the active menu variable  
   String getActiveMenu() {
     return activeMenu;
   }
 
+  //sets the active menu
   void setMenu(String state) {
     activeMenu = state;
   }
 
+  //handles all the controller information
   void checkController() {
+    //Pause button
     if (manette.boutonStart() && manette.hasNewData()) activeMenu = "pause";
+    //up button for the menu selection
     if (manette.boutonDown() && manette.hasNewData()) menuSelection += 1; 
+    //down button for the menu selection
     if (manette.boutonUp() && manette.hasNewData()) menuSelection -= 1;
   }
 
+  //makes use of W and S to for upward or downward in the menu
   void keyPressed() {
-    if (key == 'w') menuSelection -= 1;           //W
-    if (key == 's') menuSelection += 1;        //S
+    if (key == 'w') menuSelection -= 1;        //UP
+    if (key == 's') menuSelection += 1;        //DOWN
   }
 }
 
