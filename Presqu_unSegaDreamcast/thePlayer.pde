@@ -112,7 +112,7 @@ class Player {
     }
   }
 
-  //
+  //not currently implemented , but allow a LOADING SCREEN before the game "freeze" to get a new map
   void loadMap(String mapName, int mapNumber, int frameToChange) {   
     theGUI.writeText("LOADING", 1);
     if (frameCount == frameToChange) 

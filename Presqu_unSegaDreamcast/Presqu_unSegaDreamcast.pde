@@ -96,6 +96,8 @@ void keyPressed() {
     captureOn =! captureOn;
     println("Capture "+captureOn);
   }
+  
+  //sets the menu to pause
   if (key == 'q') {
     theGUI.setMenu("pause");
   }
