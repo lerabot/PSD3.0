@@ -38,7 +38,6 @@ void draw() {
   controllerPressed();
   //updates the controller information, if there's a controller
   manette.updateControllerData();
-
   //draws everything that is related to 3D
   draw3DWorld(); 
   //renders the camera and updates all the camers info

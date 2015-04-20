@@ -20,7 +20,7 @@ class GameController {
   String serialData;
 
   //currently testing a bounce feature, this is the delay
-  int bounceDelay = 100;
+  int bounceDelay = 20;
   //keeps track of the last time the data has changes
   int lastDataChange;
  
@@ -40,7 +40,7 @@ class GameController {
       //reads the serial port until a "line feed" appears
       serialBuffer = serialPort.readStringUntil(10);
       //check if the bounce time is right and if new data is sent though the port
-      if (lastDataChange < millis() + bounceDelay && serialBuffer != null && serialBuffer != serialData) {
+      if (lastDataChange + bounceDelay < millis() && serialBuffer != null && serialBuffer != serialData) {
         newData = true;
         //copy what's in the buffer into the Data string
         serialData = serialBuffer;

@@ -15,26 +15,34 @@ class Player {
   int inMapSince;
   int currentMapIndex;
 
-
+  //keeps track of the player Position (which is also the camera position)
   PVector playerPosition;
+  //this is the player direction, also the caera "aim"
   PVector playerTarget;
+  //this is the direction of the head movement
   PVector playerHeadMovement;
+  //this is the current direction as a -1 for bacward or +1 for forward
   int direction;
+  //check the next elevation, NOT IMPLEMENTED ATM
   float nextY;
   //this is important has it set the camera elevation from the floor
   float playerHeight = 100;
   //flag to allow or not movement
   boolean canMove = true;
   boolean canRotate = true;
+  //check if the player is currently on level with the current floor topography
   boolean onFloor;
-
 
 
   //variable related to the walk action 
   int walkDirection = 0; // 0=stop 1=forward -1=backward
+  //distance of each walk
   final float walkDistance = 400; //
+  //number of frame for the walk animation to complete
   float walkAnimationLength = 25; //
+  //indexes at which frame the walking animation is currently
   int currentWalkFrame = 0;
+  //keeps track of the offset for the SIN used in the walk motion
   float walkBumpAngle;
   float yDistance;
 
@@ -45,57 +53,70 @@ class Player {
 
 
 
-  Player(Camera cam) {      
+  Player(Camera cam) {   
+    //passes the camera object   
     this.playerCamera = cam;
     //sets the perspective
     this.playerCamera.zoom(0.01);
-    //feed the camPosition variable with the initial position
+    //initialize a bunch of variable need by the class
     playerPosition = new PVector(0, 0, 0);
     playerTarget = new PVector(0, 0, 0);
     playerHeadMovement = new PVector(0, 0, 0);
+    //feed the camPosition variable with the initial position and aim
     playerPosition.set(cam.position());
     playerTarget.set(cam.target());
+    //set the player as a movable and rotatable object
     canMove = true;
     canRotate = true;
+    //sets the aim at 1000 pixel deep
     cameraAim(0, 0, -1000);
   }
 
   //render the scene depending on camera location, this is the fonction to add in the main loop
   void render() {
     if (activeMap != null) {
+      //render a subtle motion so the scene is not fully static
       headMotion();
+      //calculate the position of the player
       updatePosition();
+      //check for map changes
       changeMap();
     }
+    //makes sure the camera data and player position are synced 
     updateCameraData();
+    //renders the camera
     playerCamera.feed();
   }
 
-
+  //checks for map changes
   void changeMap() {
-
-
-
-    //void loadMap(String mapName, int mapNumber, int frameToChange) {   
-    //      theGUI.writeText("LOADING", 1);
-    //      if (frameCount == frameToChange) 
-    //        thePlayer.activeMap = new Map(mapName, mapNumber);
-    //    }
-
 
     //This is for automatic map changes
     if (activeMap.getMaxTimeInMap() + inMapSince < millis()) {
+      //increments the map index, so it goes to the next map in the list
       currentMapIndex++;
+      //only goes to the next map if the name is longer than 0 char
       if (mapList[currentMapIndex].length() > 0) {
-        //      theGUI.writeText(" Loading next map", 1);
+        //loads the next map
         println("Next map is : "+mapList[currentMapIndex]);
         thePlayer.activeMap = new Map(mapList[currentMapIndex], currentMapIndex);
       } else {
+        //if the next has no character, it means this was the last map
+        //therefor, return to the main menu
         theGUI.setMenu("main");
+        //reset the position of the camera
         resetPosition();
+        //and active map points to nothing
         thePlayer.activeMap = null;
       }
     }
+  }
+
+  //
+  void loadMap(String mapName, int mapNumber, int frameToChange) {   
+    theGUI.writeText("LOADING", 1);
+    if (frameCount == frameToChange) 
+      thePlayer.activeMap = new Map(mapName, mapNumber);
   }
 
 
@@ -106,6 +127,8 @@ class Player {
     playerTarget.set(playerCamera.target());
   }
 
+  //this fonction checks if the player can move or turn, and constantly run
+  //in case some inputs have been made
   void updatePosition() {
     if (canMove) 
       goTo();
@@ -113,16 +136,21 @@ class Player {
       turnAround();
   }
 
+  //resets the camera to its initial position
   void resetPosition() {
     cameraJump(0.0, 0.0, 795.4339);
     cameraAim(100.21747, -7.848091E-5, -997.20087);
   }
 
+  //checks if there's controller input
   void checkController() {
+    //only checks if there's an actual controller object initialized
     if (manette != null) {
+      //the C button hides the GUI
       if (manette.boutonC() && manette.hasNewData()) {
         theGUI.showGUI = !theGUI.showGUI;
       }
+      //these are direction pad function, they control the player
       if (manette.boutonLeft()) rotationAngle = - 0.35;
       if (manette.boutonRight()) rotationAngle = + 0.35;
       if (manette.boutonUp()) direction = -1;           
@@ -132,19 +160,24 @@ class Player {
 
   //using the W A S D pattern to move the camera around
   void keyPressed() {
+    //the O key hides or shows the GUI
     if (key == 'o') theGUI.showGUI = !theGUI.showGUI;
+    //these are direction or movement keys, they control the player
     if (key == 'a') rotationAngle = - 0.35;     //A
     if (key == 'd') rotationAngle = + 0.35;    //D
     if (key == 'w') direction = -1;           //W
     if (key == 's') direction = 1;        //S
   }
 
+
   void goTo() {
+    //for anything to happens, it needs a direction
     if (direction != 0) {
+      //checks if this is the first frame of the loop
       if (currentWalkFrame == 0) {
-        //        nextY = getFeetFloorDiff(-direction);
         nextY = 0;
       }
+      //if the animation is under the maximum number of frame
       if (currentWalkFrame < walkAnimationLength) {
         //forward movement
         playerCamera.dolly(direction*(walkDistance/walkAnimationLength));
@@ -155,8 +188,10 @@ class Player {
         currentWalkFrame++;
         //counter for the sin wave
         walkBumpAngle += TWO_PI/walkAnimationLength;
-      } else {
+      } else { //when the loop is done
+        //resets the walk counter
         currentWalkFrame = 0;
+        //and the direction
         direction = 0;
       }
     }
@@ -172,9 +207,7 @@ class Player {
         playerCamera.pan(rotationAngle/rotationTime);
         //increments the index
         rotationDone++;
-        if (rotationDone == rotationTime) {
-        }
-      } else {
+      } else { //when the rotation is done
         //resets both the angle and the incrementation variable
         rotationDone = 0;
         rotationAngle = 0;
@@ -182,26 +215,42 @@ class Player {
     }
   }
 
+  //adds a subtle head motion to make everything looks more natural
   void headMotion() {
+    //gets a new random tumble vlaue for X and Y
     float tumbleValueX = random(-0.0002, 0.0002);
     float tumbleValueY = random(-0.0001, 0.0001);
+    //adds them to the current head movement
     playerHeadMovement.add(tumbleValueX, tumbleValueY, 0);
+    //divides the current movement by 2
     playerHeadMovement.mult(0.50);
+    //limits the movement alot, to prevent from looking everywhere
     playerHeadMovement.limit(0.001);
+    //adds the calculated movement to that actual look function
     playerCamera.look(playerHeadMovement.x, playerHeadMovement.y);
   }
 
+  // gets a PVector that indicates the direction of the player in 3D space
   PVector getDestination(PVector objectPosition, float speed) {
+    //gets the intial direction by substracting the player position from the object position
     PVector direction = PVector.sub(playerPosition, objectPosition);
+    //normalize it to get a unit vector
     direction.normalize();
+    //multiplies it by an inverse speed factor to be able to point toward the destination
     direction.mult(-speed);
     return direction;
   }
 
+  //experimental function to make the player follow a said object, NOT IMPLEMENTED YET
   void follow(PVector object, float speed) {
+    //make use of the getDestination vector to go somewhere
     PVector destination = getDestination(object, speed);
     trackCamera (destination.x, destination.z);
   }
+
+  //////////////////////////////////////////////////
+  //REPACKAGED CAMERA FUNCTIONS
+  //////////////////////////////////////////////////
 
   //teleports the player to said location
   void cameraJump(float x, float y, float z) {
@@ -212,18 +261,22 @@ class Player {
     playerCamera.aim(x, y, z);
   }
 
+  //rotate the camera around while staying at the same place
   void rotateCamera(float angle) {
     playerCamera.pan(angle);
   }
 
+  //move on the X,Y axis, doesn't change the aim
   void trackCamera(float xPos, float yPos) {
     playerCamera.track(xPos, yPos);
   }
 
+  //stay at the same place, able to move upward/downward, and look around
   void lookCamera(float azimut, float elevation) {
     playerCamera.look(azimut, elevation);
   }
 
+  //move the camera toward/backward the aim target
   void dollyCamera(float speed) {
     playerCamera.dolly(speed);
   }
@@ -284,6 +337,8 @@ class Player {
     return activeMap;
   }
 
+
+  //this function get a linear interpolation of the player toward it's "aim" or the camera "aim"
   PVector playerLerp(float lerpDist) {
     //normalize and set the scale to 1000, so you get info from 0 to 1000 pixel
     playerTarget.normalize();
@@ -291,6 +346,7 @@ class Player {
     return PVector.lerp(thePlayer.getPosition(), thePlayer.getTarget(), lerpDist);
   }
 
+  //a normalized version of the playerLerp
   PVector playerLerpNormalize() {
     //normalize and set the scale to 1000, so you get info from 0 to 1000 pixel
     PVector normalizedLerp = PVector.lerp(thePlayer.getPosition(), thePlayer.getTarget(), 1);
@@ -298,6 +354,7 @@ class Player {
     return normalizedLerp;
   }
 
+  //EXEPRIMENTAL, do not care aobut this
   PVector playerDirection(int walkDir) {
     playerTarget.normalize();
     playerTarget.setMag(1000);

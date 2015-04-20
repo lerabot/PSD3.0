@@ -16,31 +16,40 @@ class Map {
   //mostly used for collision detection, which is currently on hold
   PShape lastCheckedFace;
   PShape nextCheckedFace;
-  
+
   //a counter increase
   int collisionOffset = 0;
   int collisionVectorIndex = 0;
 
+  //holds all the LCD text Objects
   ArrayList<lcdText> texts;
+  //this is the text files every maps has, it holds all the data to make LCDtext objects
   String[] mapText;
 
+  //Adds a weather system per map, used for snow or fog
   Weather theWeather;
+  //is the weather active?
   boolean tempeteActive = false;
 
+  //a siple string that holds the map objective to display in the GUI
   String objective;
   //maximum time in map before it teleports you away (IN SECONDS)
   int maxTimeInMap;
 
-  //METHODS
-  //constructor
+  //constructor takes the map name and the level in the progression
   public Map (String mapName, int mapIndex) {
+    //save the name
     this.mapName = mapName;
+    //calls a different function to load a map depending on the mapName
     if (mapName.equals("Garage")) initPapiGarage();
     if (mapName.equals("Ext")) initPapiExt();
     if (mapName.equals("Retour")) initPapiRetour();
     if (mapName.equals("Gourdi")) initGourdi();
+    //create LCDtext objects with the MapText file each map has 
     createText(mapText);
+    //prints how many text the map has
     println("# of text: "+texts.size());
+    //set the player map as Active
     thePlayer.setMap(this, mapIndex);
   }
 
@@ -48,37 +57,45 @@ class Map {
   /////////////////////////////////////////////////////////////////////
   ///////////////////////////Shows the current map ///////////////
   ////////////////////////////////////////////////////////////////////
+
+  //main function to draw the map on the screen
   void show() {
 
-    if (mapName.equals("Gourdi")) {
-      flashLight();
-    }
+
 
     //display the current model
     if (mapModel != null && !debug) {
       shape(mapModel);
     }
 
-    //for floor model
+    //display the floor model
     if (mapFloorModel != null && !debug) {
       shape(mapFloorModel);
     }
 
+    //displays the skyp model
     if (mapSkyModel != null && !debug) {
       shape(mapSkyModel);
     }
+    
+    //
     noLights();
     if (texts != null) {
       for (lcdText t : texts) {
         t.checkText();
       }
     }
-    //    if (mapFloorModel != null)
-    //      showAverage();
 
     if (tempeteActive && !debug) {
       theWeather.display();
     }
+
+    if (mapName.equals("Gourdi")) {
+      flashLight();
+    }
+    //    if (mapFloorModel != null)
+    //      showAverage();
+
 
     if (mapName.equals("Retour") && mapModel != null) {
       glitchModel(mapModel);
@@ -438,14 +455,14 @@ class Map {
     }
   }
 
-//shows a visual representation of the middle of a face
+  //shows a visual representation of the middle of a face
   void showAverage() {
     //iterate the loop for every face of the mapFloormodel
     for (int i = 0; i < mapFloorModel.getChildCount (); i++) {
       //get a shape a current index
       PShape child = mapFloorModel.getChild(i);
       //uses the ShowTarget function to display a shpere 
-        showTarget(currentShapePosition(child).x, currentShapePosition(child).y, currentShapePosition(child).z);
+      showTarget(currentShapePosition(child).x, currentShapePosition(child).y, currentShapePosition(child).z);
     }
   }
 
