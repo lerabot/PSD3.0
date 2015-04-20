@@ -26,7 +26,7 @@ class Weather {
   //display the system you created depending on the type string
   void display() {
     if (type == "snow")
-      fog.display();
+      snow.display();
     if (type == "fog")
       fog.display();
     if (type == "both") {
