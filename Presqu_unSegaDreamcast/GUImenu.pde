@@ -30,9 +30,14 @@ class GUImenu extends GUItext {
         mainMenu();
       if (activeMenu == "pause")
         pauseMenu();
-    } else {
-      thePlayer.setMobility(true);
     }
+  }
+
+  void legitStart() {
+    clean();
+    theGUI.loading();
+    thePlayer.activeMap = new Map(mapList[0], 0);
+    activeMenu = null;
   }
 
   //this is the main menu, the first one to be shown
@@ -47,7 +52,7 @@ class GUImenu extends GUItext {
     //fills the text with the options
     objectRender.text("     Start", xTextMargin, yOffset+(yTextMargin*0));
     objectRender.text("     Exit", xTextMargin, yOffset+(yTextMargin*1));
-    objectRender.text("     Debug", xTextMargin, yOffset+(yTextMargin*2));
+    //    objectRender.text("     Debug", xTextMargin, yOffset+(yTextMargin*2));
     //draws an arrow at the menu selection variable
     objectRender.text("->", xTextMargin, yOffset+(yTextMargin*menuSelection));
     objectRender.endDraw();
@@ -55,17 +60,17 @@ class GUImenu extends GUItext {
     //it might not be the most elegant way to do this, but for now it works
     ////////////MAP SELECTOR////////////////////
     if ((menuSelection == 0 && key == 'd' && keyReady) || (menuSelection == 0 && laManette.boutonA() && manette.hasNewData())) {
-      activeMenu = "map";
-      clean();
+      //activeMenu = "map";
+      legitStart();
     }
     ///////////EXIT FUNCTION////////////////
     if ((menuSelection == 1 && key == 'd' && keyReady) || (menuSelection == 1 && laManette.boutonA() && manette.hasNewData())) {
-      exit();
+      //exit();
     }
     //////////////DEBUG + MAP///////////////////
     if ((menuSelection == 2 && key == 'd' && keyReady) || (menuSelection == 2  && laManette.boutonA() && manette.hasNewData())) {
       activeMenu = "map";
-      debug = true;
+//      debug = true;
       clean();
     }
     //set that a key as been pressed, to prevent from skipping menu
@@ -85,11 +90,11 @@ class GUImenu extends GUItext {
     objectRender.text("->", xTextMargin, yOffset+(yTextMargin*menuSelection));
     objectRender.endDraw();
     if ((menuSelection == 0 && key == 'd' && keyReady) || (menuSelection == 0  && laManette.boutonA() && manette.hasNewData())) {
-      activeMenu = "map";
+      legitStart();
       clean();
     }
     if ((menuSelection == 1 && key == 'd' && keyReady) || (menuSelection == 1   && laManette.boutonA() && manette.hasNewData())) {
-      exit();
+      //exit();
     }
     keyReady = false;
   }

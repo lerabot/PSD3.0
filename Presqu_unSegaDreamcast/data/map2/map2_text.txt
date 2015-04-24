@@ -1,7 +1,10 @@
+|10000
+
 #1 intro
--10229.522, -104.28473, -1671.9253
-Was it really 
-this far?
+
+I didn't remember his
+workshop to be that far.
+And it look different now.
 
 #2 feu
 -1923.4622, -70.32409, -2001.5834
@@ -9,12 +12,10 @@ That's where
 the fire was a
 couple year ago.
 
-
 #3 tracteur
 49.625732, -103.20639, 2151.5952
 Ah, good ol'
 tractor.
-
 
 #4 l'extension pour le bois
 1508.01, -105.69401, 2242.0723
@@ -59,7 +60,7 @@ my grandpa land
 from this other guy
 place.
 His home is nowhere
-to be seen. My granddad
+to be seen. My grandfather
 isn't to talkative
 about that either. 
 
@@ -68,18 +69,19 @@ about that either.
 My dad had one
 of these buggy they
 made with car engine.
-   
+  
 They used to
 spend so much time building
-those with his brother
+those with his brothers
 and cousin.  
 At some point, his
 sister and him crashed
 with the thing in the wood.
-    
-My granddad heard the
+  
+My grandfather heard the
 sound and ran to see what happened.
-It wasn't to bad in the end.
+It wasn't too bad in the end.
+           
 
 # tarp
 3757.8213, -79.58872, 2506.943
@@ -94,12 +96,41 @@ Because you need
 snowmobiles laying around.
 
 # un peu loin
-3820.4937, -71.49163, -1175.1107
+
 Where's the old
 treehouse? I can
 see the forest, but
 not the treehouse.
+I used to be amazed 
+by the pulley system
+my dad built to get
+stuff up there.
+Like how easily you could
+build mecanical devices
+to help you.
+       
 
+# aasd
+
+The road over there
+leads to the family
+farm.
+  
+My grandfather used
+to live there
+and we'd go there quite
+often at some point.
+There was a barn 
+full of chicken,
+old snowmobiles
+and junk.
+
+#  
+
+I sometime wonder if
+he feels alone.
+He's been working by himself
+for the past 20 years.
 
 
 

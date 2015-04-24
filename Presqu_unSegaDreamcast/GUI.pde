@@ -10,6 +10,7 @@ class GUI {//graphical user interface (CURRENTLY IN TESTING)
 
   //this is the logo of the game
   PImage splash;
+  PImage loadingScreen;
   //the 3d models for the intro screen
   PShape introScreen;
 
@@ -27,7 +28,7 @@ class GUI {//graphical user interface (CURRENTLY IN TESTING)
   int lastTextTime;
   //angle of rotation for the intro camera
   float rotAngle;
-  //the name (ID) of the currenct text displayed
+  //the name (ID) of thdisplay()e currenct text displayed
   String currentTextName;
 
   //a reference to the last displayed lcdText object
@@ -42,6 +43,7 @@ class GUI {//graphical user interface (CURRENTLY IN TESTING)
     smallBox = new GUItext(-GUI_WIDTH/2, -GUI_HEIGHT/2, 253, 80, "textTRANS.png");
     //loads the slash Screen image
     splash = loadImage("splash.png");
+    loadingScreen = loadImage("loading.png");
     //loads the intro 3d model and scales it
     introScreen = loadShape("intro/inside_lowres.obj");
     introScreen.scale(-1);
@@ -58,6 +60,7 @@ class GUI {//graphical user interface (CURRENTLY IN TESTING)
     smallBox = new GUItext(-GUI_WIDTH/2, -GUI_HEIGHT/2, 253, 80, "textTRANS.png");
     //loads the slash Screen image
     splash = loadImage("splash.png");
+    loadingScreen = loadImage("loading.png");
     //loads the intro 3d model and scales it
     introScreen = loadShape("intro/inside_lowres.obj");
     introScreen.scale(-1);
@@ -139,7 +142,19 @@ class GUI {//graphical user interface (CURRENTLY IN TESTING)
 
   //shows a little loading screen
   void loading() {
-    dialogBox.writeText("Loading", 5);
+    cleanText();
+    pushMatrix();
+    //since we use a camera, the reference point becomes the center of the screen
+    translate(GUIpos().x, GUIpos().y, GUIpos().z);
+    //draw the menu (images) from the center as reference
+    //scale + rotate them according to the camera orientation to keep them 2D
+    rotateY(frontPlane()[0]);
+    rotateZ(frontPlane()[2]);
+    rotateX(-frontPlane()[1]);
+    scale(0.25);
+    imageMode(CENTER);
+    image(loadingScreen, 0, 0);
+    popMatrix();
   }
 
   //gets the currently active menu
@@ -155,7 +170,8 @@ class GUI {//graphical user interface (CURRENTLY IN TESTING)
   //keeps track of if the GUI is displaying text, and which one
   void setTextState(boolean state, lcdText thisText) {
     isDisplayingText = state;
-    lastTextTime = millis();
+    if (state)
+      lastTextTime = millis();
     currentText = thisText;
   }
 

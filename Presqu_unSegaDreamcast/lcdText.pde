@@ -26,10 +26,10 @@ class lcdText {
   //has the text arealy been read
   boolean beenRead = false;
   //delay between each text
-  int textDelay = 6500;
- //which line of thext is currently displayed
+  int textDelay = 5000;
+  int noTextDelay = 10000;
+  //which line of thext is currently displayed
   int linePosition = 0;
-
 
   lcdText(PVector textPosition, int lineNum, String name, ArrayList<String> theText, boolean locationBased) {
     this.textPosition = textPosition;
@@ -45,7 +45,18 @@ class lcdText {
     isLocationBased = locationBased;
     this.longText = longText;
     if (longText)
-      println(name +" is a longtext");
+      println(name +" is a longtext" +theText.size());
+  }
+
+  lcdText(PVector textPosition, int lineNum, String name, ArrayList<String> theText, boolean locationBased, boolean longText, int noTextDelay) {
+    this.textPosition = textPosition;
+    this.name = name;
+    this.theText = theText;
+    isLocationBased = locationBased;
+    this.longText = longText;
+    this.noTextDelay = noTextDelay;
+    if (longText)
+      println(name +" is a longtext" +theText.size());
   }
 
   /////////////////////////////////////////////////////
@@ -69,23 +80,27 @@ class lcdText {
 
     //if there's an active text on the screen after the text display time
     if (theGUI.isDisplayingText && theGUI.noTextSince() > textDelay) { 
+      println("erase text");
       //puts the ball in it's original color;
       theGUI.getCurrentText().ballColor = color(0, 20, 180);
       //clean the text box
       theGUI.cleanText();
       //does a check if it's a long text to write the other parts
-      if (theGUI.getCurrentText().longText && !beenRead) {
+      if (theGUI.getCurrentText().longText && theGUI.getCurrentText().beenRead == false) {
         theGUI.getCurrentText().writeText();
+        println("long text");
       } else {
-        //reset the textState to empty (flase)
+        //reset the textState to empty (false)
         theGUI.setTextState(false, this);
       }
     }
 
     //this writes a non location based text after a certain delay.
-    if (theGUI.noTextSince() > 10000) {
+    if (theGUI.noTextSince() > noTextDelay) {
       //checks if it's a location based text, and if the text as already been displayed
       if (isLocationBased == false && beenRead == false) {
+        println("noTextSince");
+        theGUI.cleanText();
         writeText();
       }
     }
@@ -98,16 +113,20 @@ class lcdText {
     //iterate through 4 line of the text
     for (int i = linePosition; i < linePosition + 4; i++) {
       //only get the next line if the index i smaller than the text size
-      if (i < theText.size()) {  
+      if (i < theText.size()) {
         //only write if there's something in the string
         if (theText.get(i) != null) {
           //writes a single line at the "position" 
           theGUI.writeText(theText.get(i), position);
-//augment the pausition index          
+          //augment the pausition index          
           position++;
+        } else {
+          println("this text has been read FULLY because there's a null LINE");
+          beenRead = true;
         }
-      //if the index is larger than the text size, flag the text as read.
+        //if the index is larger than the text size, flag the text as read.
       } else {
+        println("this text has been read FULLY because the index is BIGGER OR EQUAL then the text Size");
         beenRead = true;
       }
     }
@@ -117,7 +136,8 @@ class lcdText {
     } else {
       //otherwise, add 4.
       linePosition += 4;
-    } 
+    }
+    println("has this text been read? "+beenRead);
     //sets the last displayed text to this text, and state that this is currently displayed.
     theGUI.setTextState(true, this);
   }
@@ -125,19 +145,19 @@ class lcdText {
   //a little feature that visually respresent where the taxt are
   void textDebug() {
     if (debug) {
-    pushMatrix();
-    //transalte the origin to the text location
-    translate(textPosition.x, textPosition.y, textPosition.z);
-    //rotates the sketch so that everything is facing the camera, good for 2D elements
-    rotateY(frontPlane()[0]);
-    //      text(name, 0, -20, 0);
-    //changes the style of the model
-    noStroke();    
-    fill(ballColor);
-    sphereDetail(4);
-    //draws the elements
-    sphere(25);
-    popMatrix();
+      pushMatrix();
+      //transalte the origin to the text location
+      translate(textPosition.x, textPosition.y, textPosition.z);
+      //rotates the sketch so that everything is facing the camera, good for 2D elements
+      rotateY(frontPlane()[0]);
+      //      text(name, 0, -20, 0);
+      //changes the style of the model
+      noStroke();    
+      fill(ballColor);
+      sphereDetail(4);
+      //draws the elements
+      sphere(25);
+      popMatrix();
     }
   }
 
@@ -146,6 +166,10 @@ class lcdText {
   /////////////////////////////////////////////////////////
   PVector textReach() {
     return PVector.lerp(thePlayer.getPosition(), thePlayer.getTarget(), reachDist);
+  }
+
+  void changeNoTextDelay(int time) {
+    noTextDelay = time;
   }
 }
 

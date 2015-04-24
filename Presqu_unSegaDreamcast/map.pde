@@ -51,6 +51,8 @@ class Map {
     createText(mapText);
     //prints how many text the map has
     println("# of text: "+texts.size());
+    //can Movve
+    thePlayer.setMobility(true);
     //set the player map as Active
     thePlayer.setMap(this, mapIndex);
   }
@@ -63,7 +65,11 @@ class Map {
   //main function to draw the map on the screen
   void show() {
 
-
+    //MAP EXCLUSIVE FUNCTION
+    if (mapName.equals("Gourdi")) {
+      //adds the flash light effect, the light needs to be before the model
+      flashLight();
+    }
 
     //display the current model
     if (mapModel != null && !debug) {
@@ -98,11 +104,7 @@ class Map {
       theWeather.display();
     }
 
-    //MAP EXCLUSIVE FUNCTION
-    if (mapName.equals("Gourdi")) {
-      //adds the flash light effect
-      flashLight();
-    }
+
 
     //MAP EXCLUSIVE FUNCTION
     //this one needs the mapModel to works 
@@ -140,7 +142,7 @@ class Map {
     //loads the map text into a array of strings
     mapText = loadStrings("map3/map3_text.txt");
     //maximum time allowed in this map
-    maxTimeInMap = 240;
+    maxTimeInMap = 200;
     //scale factor of the different map models
     mapScale = -1;
     //set the map position wher it should be
@@ -156,7 +158,7 @@ class Map {
     } else {
       mapFloorModel = loadShape("data/map3/map3.obj"); 
       mapFloorModel.scale(mapScale); 
-      mapModel.translate(mapPosition.x, mapPosition.y, mapPosition.z);
+      mapFloorModel.translate(mapPosition.x, mapPosition.y, mapPosition.z);
     }
     //place the player at the starting position
     thePlayer.cameraJump(1341.1835, -thePlayer.getHeight(), 2589.0117); 
@@ -169,7 +171,7 @@ class Map {
   void initPapiGarage() {
 
     objective = "Explore the area";
-    maxTimeInMap = 150;
+    maxTimeInMap = 120;
     mapScale = -30;
 
     //initialize the shape and set it to the position and scale  
@@ -439,8 +441,12 @@ class Map {
   void createText(String textfile[]) {
     //initialize the arrayText
     texts = new ArrayList<lcdText>();
+      int noTextSince = 0;
     //goes throught every line of the .txt file
     for (int i = 0; i < textfile.length; i++) {
+      if (textfile[i].length() > 0 && textfile[i].charAt(0) == '|') {
+        noTextSince = int(textfile[i].substring(1));
+      }
       //check if the line isn't blank
       if (textfile[i].length() != 0) {
         //checks if the first char is #, which marks a new block of text
@@ -471,7 +477,7 @@ class Map {
             if (textfile[lineToAdd].length() != 0) {
               theText.add(textfile[lineToAdd]);
               //if there's more thans 4 lines of text, it is a long text
-              if (j > 4) {
+              if (j > 5) {
                 longText = true;
               }
               //if a line return to 0 char, stop the for loop
@@ -480,7 +486,11 @@ class Map {
             }
           }
           //create a text 
-          texts.add(new lcdText(textPosition, i+2, getName, theText, locationBased, longText));
+          if (noTextSince > 0) {
+            texts.add(new lcdText(textPosition, i+2, getName, theText, locationBased, longText, noTextSince));
+          } else {
+            texts.add(new lcdText(textPosition, i+2, getName, theText, locationBased, longText));
+          }
         }
       }
     }

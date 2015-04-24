@@ -13,7 +13,13 @@ class Player {
   Map activeMap;
   boolean inMap;
   int inMapSince;
-  int currentMapIndex;
+  int currentMapIndex = 0;
+  int frameToChange;
+  boolean newMapLoading = false;
+  int delayForMapChange = 240;
+
+  //keeps the controller data
+  GameController manette;
 
   //keeps track of the player Position (which is also the camera position)
   PVector playerPosition;
@@ -53,7 +59,7 @@ class Player {
 
 
 
-  Player(Camera cam) {   
+  Player(Camera cam, GameController manette) {   
     //passes the camera object   
     this.playerCamera = cam;
     //sets the perspective
@@ -70,6 +76,7 @@ class Player {
     canRotate = true;
     //sets the aim at 1000 pixel deep
     cameraAim(0, 0, -1000);
+    this.manette = manette;
   }
 
   //render the scene depending on camera location, this is the fonction to add in the main loop
@@ -80,26 +87,35 @@ class Player {
       //calculate the position of the player
       updatePosition();
       //check for map changes
-      changeMap();
+      checkForMapChange();
     }
     //makes sure the camera data and player position are synced 
     updateCameraData();
     //renders the camera
     playerCamera.feed();
+//////////////////////////GHETTO FUNCTION TO KEEP PLAYER AROUND GROUND///////////////////////
+    if (playerPosition.y > 120 || playerPosition.y < 80) {
+      cameraJump(playerPosition.x, playerHeight, playerPosition.z);
+      cameraAim(playerTarget.x, playerHeight, playerTarget.z);
+    }
   }
 
   //checks for map changes
-  void changeMap() {
+  void checkForMapChange() {
 
     //This is for automatic map changes
-    if (activeMap.getMaxTimeInMap() + inMapSince < millis()) {
+    if (activeMap.getMaxTimeInMap() + inMapSince < millis() && !newMapLoading) {
       //increments the map index, so it goes to the next map in the list
       currentMapIndex++;
       //only goes to the next map if the name is longer than 0 char
       if (mapList[currentMapIndex].length() > 0) {
-        //loads the next map
         println("Next map is : "+mapList[currentMapIndex]);
-        thePlayer.activeMap = new Map(mapList[currentMapIndex], currentMapIndex);
+        //reset the GUI text, sometime a text would jam up at this point, so this prevent the bug
+        theGUI.setTextState(false, null);
+        //loads new map object
+        loadMap(frameCount + delayForMapChange);
+        setMobility(false);
+        newMapLoading = true;
       } else {
         //if the next has no character, it means this was the last map
         //therefor, return to the main menu
@@ -109,14 +125,24 @@ class Player {
         //and active map points to nothing
         thePlayer.activeMap = null;
       }
+    } 
+    setNewMap(mapList[currentMapIndex], currentMapIndex);
+  }
+
+  void setNewMap(String mapName, int mapNumber) {
+    if (newMapLoading)
+      theGUI.loading(); 
+    if (frameCount == frameToChange && newMapLoading) {
+      thePlayer.activeMap = new Map(mapName, mapNumber);
+      theGUI.cleanText();
+      setMobility(true);
+      newMapLoading = false;
     }
   }
 
   //not currently implemented , but allow a LOADING SCREEN before the game "freeze" to get a new map
-  void loadMap(String mapName, int mapNumber, int frameToChange) {   
-    theGUI.writeText("LOADING", 1);
-    if (frameCount == frameToChange) 
-      thePlayer.activeMap = new Map(mapName, mapNumber);
+  void loadMap(int frameToChange) {
+    this.frameToChange = frameToChange;
   }
 
 
@@ -172,7 +198,7 @@ class Player {
 
   void goTo() {
     //for anything to happens, it needs a direction
-    if (direction != 0) {
+    if (direction != 0 && canMove) {
       //checks if this is the first frame of the loop
       if (currentWalkFrame == 0) {
         nextY = 0;
@@ -315,8 +341,11 @@ class Player {
   }
 
   void setMobility(boolean state) {
-    canRotate = state;
-    canMove = state;
+    if (state != canMove) {
+      println("change movement state = "+ state);
+      canRotate = state;
+      canMove = state;
+    }
   }
 
   void setMap(Map theMap, int mapIndex) {

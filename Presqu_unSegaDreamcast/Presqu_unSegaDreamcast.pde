@@ -4,6 +4,8 @@
  * Date: April 18th 2015
  * Description: Still not exatly done, but in a playeable state thoughout the 4 maps.
  */
+ 
+//UNDER GPL2.0 LICENSE
 
 
 //SETUP///////
@@ -19,7 +21,7 @@ void setup() {
   //creates a camera and set it's attributes
   explorerCam = new Camera (this, 0.85, 1.77, 100, 100000);
   //create a player Object and passes the camera
-  thePlayer = new Player(explorerCam);
+  thePlayer = new Player(explorerCam, manette);
   //GUI///////////////////////////////////////////////////////////////
   //creates a new GUI an inform that there's a controller
   theGUI = new GUI(manette);

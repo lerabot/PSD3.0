@@ -8,7 +8,7 @@ We use to come
 almost every weekend
 when I was younger.
    
-My brother and I
+My brother Sam and I
 would make fires 
 and dig holes in the
 sand around the house.
@@ -25,20 +25,23 @@ and old blankets
 I'm sure these
 things didn't move
 in 15 years
+  
+I wonder what
+I'd find in there...
+          
 
 # tracteur
 -1213.6721, -91.54729, 1740.4722
 1000 dollar for this
-tractor my grampa
+tractor my grandfather
 said a 1000 times.
 
 door
 -2283.7969, -30.795784, 1103.5791
 From cold outside
 to half cold here,
-it's better inside
-the house.
-
+it'd be better to
+stay inside.
 
 # staircase
 -41.61267, 1.95191, 4242.3066
@@ -58,7 +61,11 @@ A couple of old
 power tools.
 Never saw him
 work here tho.
-
+He has his workshop
+like 1 minute walk away...
+  
+  
+  
 # moteur
 708.9695, 10.828534, 969.4253
 One of his many
@@ -112,7 +119,7 @@ another chair.
 # rrrrrr
 
 Ho! See!
-A broken chair!
+Another broken chair!
 
 
 
@@ -121,7 +128,8 @@ A broken chair!
 
 Why does he keep
 all this junk?
-I not even better anyway...
+Well I'm not
+better anyway...
 
 
 
